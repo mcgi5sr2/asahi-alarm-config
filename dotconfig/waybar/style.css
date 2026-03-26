@@ -58,6 +58,7 @@ window#waybar {
 #bluetooth,
 #network,
 #battery,
+#custom-power-draw,
 #custom-nightlight,
 #tray,
 #custom-power {
@@ -123,6 +124,26 @@ window#waybar {
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
     background-color: rgba(243, 139, 168, 0.3);
+}
+
+#custom-power-draw {
+    color: #89dceb;
+}
+
+#custom-power-draw.discharging {
+    color: #e5783a;
+}
+
+#custom-power-draw.charging {
+    color: #89dceb;
+}
+
+#custom-power-draw tooltip {
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid rgba(137, 220, 235, 0.3);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: #d0d0d0;
 }
 
 #custom-nightlight {
