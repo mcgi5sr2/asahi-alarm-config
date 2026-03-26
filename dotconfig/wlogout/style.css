@@ -1,0 +1,41 @@
+* {
+    font-family: "FiraCode Nerd Font", sans-serif;
+    font-weight: normal;
+    background: transparent;
+}
+
+window {
+    background: rgba(15, 15, 20, 0.75);
+}
+
+button {
+    background-color: rgba(30, 30, 40, 0.6);
+    background-repeat: no-repeat;
+    background-position: center 35%;
+    background-size: 120px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    font-weight: normal;
+    margin: 10px;
+    padding: 110px 20px 20px 20px;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+}
+
+button:focus {
+    outline: none;
+}
+
+#lock      { background-image: url("/home/mcgi5sr2/.config/wlogout/icons/lock.png"); }
+#logout    { background-image: url("/home/mcgi5sr2/.config/wlogout/icons/logout.png"); }
+#suspend   { background-image: url("/home/mcgi5sr2/.config/wlogout/icons/suspend.png"); }
+#hibernate { background-image: url("/home/mcgi5sr2/.config/wlogout/icons/hibernate.png"); }
+#shutdown  { background-image: url("/home/mcgi5sr2/.config/wlogout/icons/shutdown.png"); }
+#reboot    { background-image: url("/home/mcgi5sr2/.config/wlogout/icons/reboot.png"); }

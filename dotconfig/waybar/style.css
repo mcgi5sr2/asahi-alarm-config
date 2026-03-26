@@ -1,0 +1,154 @@
+* {
+    font-family: "FiraCode Nerd Font", "Noto Sans", sans-serif;
+    font-size: 13px;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(20, 20, 20, 0.85);
+    color: #d0d0d0;
+    border-radius: 12px;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+    background: transparent;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    color: #555555;
+    background: transparent;
+    border-radius: 8px;
+    margin: 4px 2px;
+    transition: all 0.2s ease;
+}
+
+#workspaces button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #d0d0d0;
+}
+
+#workspaces button.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+#workspaces button.urgent {
+    background: rgba(243, 139, 168, 0.3);
+    color: #f38ba8;
+}
+
+#window {
+    padding: 0 10px;
+    color: #888888;
+    font-style: italic;
+}
+
+#clock {
+    padding: 0 12px;
+    color: #d0d0d0;
+    font-weight: bold;
+}
+
+#pulseaudio,
+#bluetooth,
+#network,
+#battery,
+#custom-nightlight,
+#tray,
+#custom-power {
+    padding: 0 10px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    background: rgba(35, 35, 35, 0.8);
+    color: #d0d0d0;
+}
+
+#pulseaudio:hover,
+#bluetooth:hover,
+#network:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+#pulseaudio.muted {
+    color: #555555;
+}
+
+#bluetooth {
+    color: #a0a0a0;
+}
+
+#bluetooth.connected {
+    color: #d0d0d0;
+}
+
+#bluetooth.off {
+    color: #555555;
+}
+
+#network.disconnected {
+    color: #f38ba8;
+}
+
+#battery.charging {
+    color: #a8d8a8;
+}
+
+#battery.warning:not(.charging) {
+    color: #fab387;
+}
+
+#battery.critical:not(.charging) {
+    color: #f38ba8;
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    to { color: transparent; }
+}
+
+#tray {
+    padding: 0 6px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: rgba(243, 139, 168, 0.3);
+}
+
+#custom-nightlight {
+    font-size: 15px;
+}
+
+#custom-nightlight.night {
+    color: #fab387;
+}
+
+#custom-nightlight.day {
+    color: #555555;
+}
+
+#custom-nightlight:hover {
+    background: rgba(250, 179, 135, 0.15);
+    color: #fab387;
+}
+
+#custom-power {
+    color: #f38ba8;
+    font-size: 16px;
+    padding: 0 12px;
+}
+
+#custom-power:hover {
+    background: rgba(243, 139, 168, 0.2);
+    color: #f38ba8;
+}
