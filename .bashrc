@@ -45,4 +45,6 @@ __prompt_git() {
 }
 PS1='\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;33m\]\W\[\e[00m\]$(__prompt_git)\[\e[00m\] \$ '
 
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+
 fastfetch
