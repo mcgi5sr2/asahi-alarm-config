@@ -15,16 +15,16 @@ charging() {
 case "$1" in
     active)
         if charging; then
-            hyprctl keyword monitor eDP-1,3024x1890@120,0x0,2
+            hyprctl keyword monitor eDP-1,3024x1890@120,0x0,1.5
         else
-            hyprctl keyword monitor eDP-1,3024x1890@60,0x0,2
+            hyprctl keyword monitor eDP-1,3024x1890@60,0x0,1.5
         fi
         ;;
     idle)
         if charging; then
-            hyprctl keyword monitor eDP-1,3024x1890@60,0x0,2
+            hyprctl keyword monitor eDP-1,3024x1890@60,0x0,1.5
         else
-            hyprctl keyword monitor eDP-1,3024x1890@30,0x0,2
+            hyprctl keyword monitor eDP-1,3024x1890@30,0x0,1.5
         fi
         ;;
     *)
