@@ -9,7 +9,8 @@
 
     "modules-left": [
         "hyprland/workspaces",
-        "hyprland/window"
+        "hyprland/window",
+        "custom/spotify"
     ],
 
     "modules-center": [
@@ -17,12 +18,13 @@
     ],
 
     "modules-right": [
-        "pulseaudio",
-        "bluetooth",
-        "network",
-        "battery",
+        "custom/cpu-cores",
+        "disk",
         "custom/power-draw",
         "custom/nightlight",
+        "battery",
+        "custom/wifi",
+        "custom/volume",
         "tray",
         "custom/power"
     ],
@@ -40,18 +42,18 @@
     },
 
     "clock": {
-        "format": " {:%a %d %b  %H:%M}",
+        "format": " {:%Y-%m-%d  %H:%M:%S}",
+        "interval": 1,
         "tooltip-format": "<big>{:%B %Y}</big>\n<tt><small>{calendar}</small></tt>"
     },
 
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": "󰝟 Muted",
-        "format-icons": {
-            "default": ["󰕿", "󰖀", "󰕾"]
-        },
+    "custom/volume": {
+        "exec": "~/.config/waybar/scripts/volume.sh",
+        "return-type": "json",
+        "interval": 2,
+        "format": "{}",
         "on-click": "pavucontrol",
-        "scroll-step": 5
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
     },
 
     "bluetooth": {
@@ -65,14 +67,19 @@
         "on-click": "blueman-manager"
     },
 
-    "network": {
-        "format-wifi": "  {essid}",
-        "format-ethernet": "󰈀 {ipaddr}",
-        "format-disconnected": "󰤭 Disconnected",
-        "tooltip-format-wifi": "{essid}\nSignal: {signalStrength}%\nFrequency: {frequency}GHz\nIP: {ipaddr}",
-        "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}",
-        "tooltip-format-disconnected": "No network connection",
+    "custom/wifi": {
+        "exec": "~/.config/waybar/scripts/wifi.sh",
+        "return-type": "json",
+        "interval": 5,
+        "format": "{}",
         "on-click": "nm-connection-editor"
+    },
+
+    "backlight": {
+        "format": "{icon} {percent}%",
+        "format-icons": ["󰃞", "󰃟", "󰃠"],
+        "on-scroll-down": "brightnessctl s 5%-",
+        "on-scroll-up": "brightnessctl s +5%"
     },
 
     "battery": {
@@ -85,7 +92,43 @@
         "format-charging": "󰂄 {capacity}%",
         "format-plugged": "󰚥 {capacity}%",
         "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-        "tooltip-format": "{timeTo}\nCycles: {cycles}"
+        "tooltip-format": "{timeTo}"
+    },
+
+    "custom/cpu-cores": {
+        "exec": "~/.config/waybar/scripts/cpu-cores.sh",
+        "return-type": "json",
+        "interval": 3,
+        "format": "{}"
+    },
+
+    "disk": {
+        "path": "/",
+        "format": "󰋊 {percentage_used}%",
+        "tooltip-format": "/ — {used} used of {total}\n{free} free",
+        "interval": 30,
+        "states": {
+            "warning": 75,
+            "critical": 90
+        }
+    },
+
+    "custom/spotify": {
+        "exec": "~/.config/waybar/mediaplayer.py --player spotify",
+        "format": "{}  ",
+        "return-type": "json",
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous"
+    },
+
+    "custom/nightlight": {
+        "exec": "~/.config/waybar/scripts/hyprsunset-status.sh",
+        "return-type": "json",
+        "interval": "once",
+        "signal": 8,
+        "on-click": "~/.config/waybar/scripts/hyprsunset-toggle.sh",
+        "format": "{}"
     },
 
     "tray": {
@@ -100,18 +143,9 @@
         "format": "{}"
     },
 
-    "custom/nightlight": {
-        "exec": "~/.config/waybar/scripts/hyprsunset-status.sh",
-        "return-type": "json",
-        "interval": "once",
-        "signal": 8,
-        "on-click": "~/.config/waybar/scripts/hyprsunset-toggle.sh",
-        "format": "{}"
-    },
-
     "custom/power": {
         "format": "⏻",
         "tooltip": false,
-        "on-click": "wlogout -b 3 -c 5 -r 5 -m 10 -C /home/mcgi5sr2/.config/wlogout/style.css -l /home/mcgi5sr2/.config/wlogout/layout"
+        "on-click": "wlogout -b 3 -c 5 -r 5 -m 10 -L 300 -R 300 -T 200 -B 200 -C /home/me1sgr/.config/wlogout/style.css -l /home/me1sgr/.config/wlogout/layout"
     }
 }

@@ -1,5 +1,5 @@
 * {
-    font-family: "FiraCode Nerd Font", "Noto Sans", sans-serif;
+    font-family: "FiraCode Nerd Font", sans-serif;
     font-size: 13px;
     border: none;
     border-radius: 0;
@@ -7,9 +7,8 @@
 }
 
 window#waybar {
-    background: rgba(20, 20, 20, 0.85);
+    background: transparent;
     color: #d0d0d0;
-    border-radius: 12px;
 }
 
 .modules-left,
@@ -49,34 +48,62 @@ window#waybar {
 }
 
 #clock {
-    padding: 0 12px;
-    color: #d0d0d0;
     font-weight: bold;
 }
 
-#pulseaudio,
+#custom-wifi,
 #bluetooth,
-#network,
 #battery,
-#custom-power-draw,
+#backlight,
+#custom-spotify,
 #custom-nightlight,
+#custom-power-draw,
+#custom-cpu-cores,
+#disk,
 #tray,
-#custom-power {
+#custom-power,
+#clock,
+#workspaces,
+#window {
     padding: 0 10px;
     margin: 4px 2px;
     border-radius: 8px;
-    background: rgba(35, 35, 35, 0.8);
+    background: rgba(20, 20, 20, 0.8);
     color: #d0d0d0;
 }
 
-#pulseaudio:hover,
-#bluetooth:hover,
-#network:hover {
+#custom-volume:hover,
+#custom-wifi:hover,
+#bluetooth:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
 }
 
-#pulseaudio.muted {
+#custom-volume {
+    padding: 0 10px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    background: rgba(20, 20, 20, 0.8);
+}
+
+#custom-volume.healthy { color: #50fa7b; }
+#custom-volume.loud    { color: #f38ba8; }
+#custom-volume.quiet   { color: #89b4fa; }
+#custom-volume.muted   { color: #555555; }
+
+#custom-wifi.strong {
+    color: #50fa7b;
+}
+
+#custom-wifi.medium {
+    color: #fab387;
+}
+
+#custom-wifi.weak {
+    color: #f38ba8;
+}
+
+#custom-wifi.disconnected {
     color: #555555;
 }
 
@@ -144,6 +171,32 @@ window#waybar {
     border-radius: 8px;
     padding: 6px 10px;
     color: #d0d0d0;
+}
+
+#custom-cpu-cores {
+    color: #a8d8a8;
+    font-family: "FiraCode Nerd Font", monospace;
+    letter-spacing: 1px;
+}
+
+#custom-cpu-cores.high {
+    color: #fab387;
+}
+
+#custom-cpu-cores.critical {
+    color: #f38ba8;
+}
+
+#disk {
+    color: #89b4fa;
+}
+
+#disk.warning {
+    color: #fab387;
+}
+
+#disk.critical {
+    color: #f38ba8;
 }
 
 #custom-nightlight {
