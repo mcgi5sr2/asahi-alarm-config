@@ -36,8 +36,17 @@
 
     "hyprland/window": {
         "format": "{title}",
+        "icon": true,
+        "icon-size": 16,
         "max-length": 60,
-        "separate-outputs": true
+        "separate-outputs": true,
+        "rewrite": {
+            "(.*) — Mozilla Firefox": "$1",
+            "(.*) - Mozilla Firefox": "$1",
+            "(.*) - Visual Studio Code": "$1",
+            "(.*) — Dolphin": "$1",
+            "(.*) - Discord": "$1"
+        }
     },
 
     "clock": {

@@ -1,3 +1,5 @@
+/* Arch blue theme — dark transparencies + #1793D1 accents */
+
 * {
     font-family: "FiraCode Nerd Font", sans-serif;
     font-size: 13px;
@@ -19,7 +21,7 @@ window#waybar {
 
 #workspaces button {
     padding: 0 8px;
-    color: #555555;
+    color: #6c7080;
     background: transparent;
     border-radius: 8px;
     margin: 4px 2px;
@@ -27,13 +29,14 @@ window#waybar {
 }
 
 #workspaces button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(23, 147, 209, 0.12);
     color: #d0d0d0;
 }
 
 #workspaces button.active {
-    background: rgba(130, 220, 204, 0.2);
-    color: #82dccc;
+    background: rgba(23, 147, 209, 0.22);
+    color: #1793d1;
+    border-bottom: 2px solid #1793d1;
 }
 
 #workspaces button.urgent {
@@ -43,8 +46,7 @@ window#waybar {
 
 #window {
     padding: 0 10px;
-    color: #888888;
-    font-style: italic;
+    color: #b8becc;
 }
 
 #clock {
@@ -52,7 +54,6 @@ window#waybar {
 }
 
 #custom-wifi,
-#battery,
 #custom-spotify,
 #custom-nightlight,
 #custom-power-draw,
@@ -66,36 +67,35 @@ window#waybar {
     padding: 0 10px;
     margin: 4px 2px;
     border-radius: 8px;
-    background: rgba(20, 20, 20, 0.8);
+    background: rgba(15, 22, 32, 0.78);
     color: #d0d0d0;
-}
-
-#custom-volume:hover,
-#custom-wifi:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
 }
 
 #custom-volume {
     padding: 0 10px;
     margin: 4px 2px;
     border-radius: 8px;
-    background: rgba(20, 20, 20, 0.8);
+    background: rgba(15, 22, 32, 0.78);
 }
 
-#custom-volume.healthy { color: #50fa7b; }
+#custom-volume:hover,
+#custom-wifi:hover {
+    background: rgba(23, 147, 209, 0.18);
+    color: #ffffff;
+}
+
+/* Volume / wifi keep semantic state colours */
+#custom-volume.healthy { color: #5fbf75; }
 #custom-volume.loud    { color: #f38ba8; }
-#custom-volume.quiet   { color: #89b4fa; }
+#custom-volume.quiet   { color: #1793d1; }
 #custom-volume.muted   { color: #555555; }
 
-#custom-wifi.strong       { color: #50fa7b; }
+#custom-wifi.strong       { color: #5fbf75; }
 #custom-wifi.medium       { color: #fab387; }
 #custom-wifi.weak         { color: #f38ba8; }
 #custom-wifi.disconnected { color: #555555; }
 
-#tray {
-    padding: 0 6px;
-}
+#tray { padding: 0 6px; }
 
 #tray > .passive {
     -gtk-icon-effect: dim;
@@ -103,17 +103,17 @@ window#waybar {
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: rgba(243, 139, 168, 0.3);
+    background-color: rgba(23, 147, 209, 0.25);
 }
 
-/* GPU power readout: idle (cyan) -> medium (orange) -> critical (red) */
-#custom-power-draw          { color: #89dceb; }
-#custom-power-draw.idle     { color: #89dceb; }
+/* GPU power readout: idle (arch blue) -> medium (orange) -> critical (red) */
+#custom-power-draw          { color: #1793d1; }
+#custom-power-draw.idle     { color: #1793d1; }
 #custom-power-draw.medium   { color: #fab387; }
 #custom-power-draw.critical { color: #f38ba8; }
 
 #custom-cpu-cores {
-    color: #a8d8a8;
+    color: #6db8e0;
     font-family: "FiraCode Nerd Font", monospace;
     letter-spacing: 1px;
 }
@@ -121,14 +121,11 @@ window#waybar {
 #custom-cpu-cores.high     { color: #fab387; }
 #custom-cpu-cores.critical { color: #f38ba8; }
 
-#disk          { color: #89b4fa; }
+#disk          { color: #1793d1; }
 #disk.warning  { color: #fab387; }
 #disk.critical { color: #f38ba8; }
 
-#custom-nightlight {
-    font-size: 15px;
-}
-
+#custom-nightlight       { font-size: 15px; }
 #custom-nightlight.night { color: #fab387; }
 #custom-nightlight.day   { color: #555555; }
 
