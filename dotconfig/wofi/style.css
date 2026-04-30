@@ -1,0 +1,71 @@
+/* wofi theme — matches waybar dark + cyan/blue accent */
+
+* {
+    font-family: "FiraCode Nerd Font", monospace;
+    font-size: 13px;
+}
+
+window {
+    background-color: rgba(15, 15, 20, 0.92);
+    border: 2px solid rgba(130, 220, 204, 0.45);
+    border-radius: 12px;
+    padding: 8px;
+}
+
+#input {
+    margin: 6px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background-color: rgba(30, 30, 40, 0.8);
+    color: #d0d0d0;
+    font-size: 14px;
+}
+
+#input:focus {
+    border-color: rgba(130, 220, 204, 0.6);
+    outline: none;
+}
+
+#inner-box {
+    margin: 4px;
+    background-color: transparent;
+}
+
+#outer-box {
+    margin: 0;
+    background-color: transparent;
+}
+
+#scroll {
+    margin: 4px;
+    background-color: transparent;
+}
+
+#text {
+    color: #d0d0d0;
+    margin: 2px 8px;
+}
+
+#entry {
+    padding: 6px 8px;
+    border-radius: 6px;
+    background-color: transparent;
+}
+
+#entry:selected {
+    background-color: rgba(130, 220, 204, 0.20);
+}
+
+#entry:selected #text {
+    color: #ffffff;
+}
+
+#entry image {
+    margin-right: 10px;
+    -gtk-icon-transform: scale(0.9);
+}
+
+#entry:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}

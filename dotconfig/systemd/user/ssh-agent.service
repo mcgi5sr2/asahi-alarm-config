@@ -6,8 +6,6 @@ Before=graphical-session.target
 Type=simple
 Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
 ExecStart=/usr/bin/ssh-agent -D -a %t/ssh-agent.socket
-ExecStartPost=/usr/bin/ssh-add /home/mcgi5sr2/.ssh/id_ed25519
-ExecStartPost=/usr/bin/ssh-add /home/mcgi5sr2/.ssh/jellyfin_key
 Restart=on-failure
 
 [Install]

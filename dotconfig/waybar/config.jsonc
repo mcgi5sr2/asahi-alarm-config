@@ -22,7 +22,6 @@
         "disk",
         "custom/power-draw",
         "custom/nightlight",
-        "battery",
         "custom/wifi",
         "custom/volume",
         "tray",
@@ -56,43 +55,12 @@
         "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
     },
 
-    "bluetooth": {
-        "format": " {status}",
-        "format-connected": " {device_alias}",
-        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
-        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
-        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
-        "on-click": "blueman-manager"
-    },
-
     "custom/wifi": {
         "exec": "~/.config/waybar/scripts/wifi.sh",
         "return-type": "json",
         "interval": 5,
         "format": "{}",
         "on-click": "nm-connection-editor"
-    },
-
-    "backlight": {
-        "format": "{icon} {percent}%",
-        "format-icons": ["󰃞", "󰃟", "󰃠"],
-        "on-scroll-down": "brightnessctl s 5%-",
-        "on-scroll-up": "brightnessctl s +5%"
-    },
-
-    "battery": {
-        "states": {
-            "good": 80,
-            "warning": 30,
-            "critical": 15
-        },
-        "format": "{icon} {capacity}%",
-        "format-charging": "󰂄 {capacity}%",
-        "format-plugged": "󰚥 {capacity}%",
-        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-        "tooltip-format": "{timeTo}"
     },
 
     "custom/cpu-cores": {
@@ -139,13 +107,13 @@
     "custom/power-draw": {
         "exec": "~/.config/waybar/scripts/power-draw.sh",
         "return-type": "json",
-        "interval": 5,
+        "interval": 3,
         "format": "{}"
     },
 
     "custom/power": {
         "format": "⏻",
         "tooltip": false,
-        "on-click": "wlogout -b 3 -c 5 -r 5 -m 10 -L 300 -R 300 -T 200 -B 200 -C /home/me1sgr/.config/wlogout/style.css -l /home/me1sgr/.config/wlogout/layout"
+        "on-click": "wlogout -b 3 -c 5 -r 5 -m 10 -L 300 -R 300 -T 200 -B 200"
     }
 }
