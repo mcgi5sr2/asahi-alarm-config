@@ -1,4 +1,4 @@
-show=drun
+show=drun,run
 prompt=Search...
 width=600
 height=400
