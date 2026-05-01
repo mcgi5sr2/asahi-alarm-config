@@ -1,4 +1,4 @@
-show=run
+show=run,drun
 exec_search=true
 prompt=Search...
 width=600
