@@ -18,7 +18,7 @@
     ],
 
     "modules-right": [
-        "custom/cpu-cores",
+        "battery",
         "disk",
         "custom/power-draw",
         "custom/nightlight",
@@ -55,6 +55,30 @@
         "tooltip-format": "<big>{:%B %Y}</big>\n<tt><small>{calendar}</small></tt>"
     },
 
+    "battery": {
+        "states": {
+            "good": 80,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-plugged": "󰚥 {capacity}%",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "tooltip-format": "{timeTo}\nCycles: {cycles}"
+    },
+
+    "disk": {
+        "path": "/",
+        "format": "󰋊 {percentage_used}%",
+        "tooltip-format": "/ — {used} used of {total}\n{free} free",
+        "interval": 30,
+        "states": {
+            "warning": 75,
+            "critical": 90
+        }
+    },
+
     "custom/volume": {
         "exec": "~/.config/waybar/scripts/volume.sh",
         "return-type": "json",
@@ -70,24 +94,6 @@
         "interval": 5,
         "format": "{}",
         "on-click": "nm-connection-editor"
-    },
-
-    "custom/cpu-cores": {
-        "exec": "~/.config/waybar/scripts/cpu-cores.sh",
-        "return-type": "json",
-        "interval": 3,
-        "format": "{}"
-    },
-
-    "disk": {
-        "path": "/",
-        "format": "󰋊 {percentage_used}%",
-        "tooltip-format": "/ — {used} used of {total}\n{free} free",
-        "interval": 30,
-        "states": {
-            "warning": 75,
-            "critical": 90
-        }
     },
 
     "custom/spotify": {

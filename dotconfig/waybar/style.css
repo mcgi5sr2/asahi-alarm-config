@@ -53,12 +53,13 @@ window#waybar {
     font-weight: bold;
 }
 
+#battery,
+#disk,
 #custom-wifi,
 #custom-spotify,
+#custom-volume,
 #custom-nightlight,
 #custom-power-draw,
-#custom-cpu-cores,
-#disk,
 #tray,
 #custom-power,
 #clock,
@@ -71,20 +72,12 @@ window#waybar {
     color: #d0d0d0;
 }
 
-#custom-volume {
-    padding: 0 10px;
-    margin: 4px 2px;
-    border-radius: 8px;
-    background: rgba(15, 22, 32, 0.78);
-}
-
 #custom-volume:hover,
 #custom-wifi:hover {
     background: rgba(23, 147, 209, 0.18);
     color: #ffffff;
 }
 
-/* Volume / wifi keep semantic state colours */
 #custom-volume.healthy { color: #5fbf75; }
 #custom-volume.loud    { color: #f38ba8; }
 #custom-volume.quiet   { color: #1793d1; }
@@ -94,6 +87,22 @@ window#waybar {
 #custom-wifi.medium       { color: #fab387; }
 #custom-wifi.weak         { color: #f38ba8; }
 #custom-wifi.disconnected { color: #555555; }
+
+#battery.charging { color: #a8d8a8; }
+#battery.plugged  { color: #5fbf75; }
+
+#battery.warning:not(.charging) {
+    color: #fab387;
+}
+
+#battery.critical:not(.charging) {
+    color: #f38ba8;
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    to { color: transparent; }
+}
 
 #tray { padding: 0 6px; }
 
@@ -106,20 +115,10 @@ window#waybar {
     background-color: rgba(23, 147, 209, 0.25);
 }
 
-/* GPU power readout: idle (arch blue) -> medium (orange) -> critical (red) */
 #custom-power-draw          { color: #1793d1; }
 #custom-power-draw.idle     { color: #1793d1; }
 #custom-power-draw.medium   { color: #fab387; }
 #custom-power-draw.critical { color: #f38ba8; }
-
-#custom-cpu-cores {
-    color: #6db8e0;
-    font-family: "FiraCode Nerd Font", monospace;
-    letter-spacing: 1px;
-}
-
-#custom-cpu-cores.high     { color: #fab387; }
-#custom-cpu-cores.critical { color: #f38ba8; }
 
 #disk          { color: #1793d1; }
 #disk.warning  { color: #fab387; }
