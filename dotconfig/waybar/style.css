@@ -22,21 +22,30 @@ window#waybar {
 #workspaces button {
     padding: 0 8px;
     color: #6c7080;
-    background: transparent;
-    border-radius: 8px;
+    background: rgba(80, 85, 95, 0.4);
+    border-radius: 6px;
     margin: 4px 2px;
     transition: all 0.2s ease;
 }
 
 #workspaces button:hover {
-    background: rgba(23, 147, 209, 0.12);
-    color: #d0d0d0;
+    background-image: linear-gradient(to bottom, #0d5f9a, #061f33);
+    background-color: transparent;
+    box-shadow: none;
+    color: #ffffff;
 }
 
 #workspaces button.active {
-    background: rgba(23, 147, 209, 0.22);
-    color: #1793d1;
-    border-bottom: 2px solid #1793d1;
+    background-image: linear-gradient(to bottom, #0d5f9a, #061f33);
+    background-color: transparent;
+    color: #ffffff;
+}
+
+#workspaces button.active:hover {
+    background-image: linear-gradient(to bottom, #061f33, #0d5f9a);
+    background-color: transparent;
+    box-shadow: none;
+    color: #ffffff;
 }
 
 #workspaces button.urgent {
