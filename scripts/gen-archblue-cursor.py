@@ -45,5 +45,8 @@ for hlc in os.listdir(f"{SRC}/hyprcursors"):
             for fname in os.listdir(tmp):
                 z.write(f"{tmp}/{fname}", fname)
 
+with open(f"{DEST}/index.theme", "w") as f:
+    f.write("[Icon Theme]\nName=Nordzy-archblue\nComment=Nordzy with Arch Blue gradient\nInherits=Nordzy-cursors\n")
+
 print(f"Done — theme written to {DEST}")
 print("Run: hyprctl setcursor Nordzy-archblue 24")
