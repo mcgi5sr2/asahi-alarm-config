@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Generates Nordzy-archblue hyprcursor theme from installed Nordzy-hyprcursors.
-# Replaces the white outline (#d8dee9) with an arch blue gradient (#1793d1 -> #0d5f9a).
+# Replaces the white outline (#d8dee9) with an arch blue gradient (#88d4f5 -> #1793d1).
 # Run once after fresh install: python3 scripts/gen-archblue-cursor.py
 
 import os, shutil, zipfile, tempfile, re
@@ -11,8 +11,8 @@ DEST = os.path.expanduser("~/.local/share/icons/Nordzy-archblue")
 GRADIENT_DEFS = (
     '<defs>'
     '<linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">'
-    '<stop offset="0%" stop-color="#1793d1"/>'
-    '<stop offset="100%" stop-color="#0d5f9a"/>'
+    '<stop offset="0%" stop-color="#88d4f5"/>'
+    '<stop offset="100%" stop-color="#1793d1"/>'
     '</linearGradient>'
     '</defs>'
 )
