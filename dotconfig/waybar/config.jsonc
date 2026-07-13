@@ -19,6 +19,7 @@
 
     "modules-right": [
         "battery",
+        "custom/cpu-cores",
         "disk",
         "custom/power-draw",
         "custom/nightlight",
@@ -68,17 +69,6 @@
         "tooltip-format": "{timeTo}\nCycles: {cycles}"
     },
 
-    "disk": {
-        "path": "/",
-        "format": "󰋊 {percentage_used}%",
-        "tooltip-format": "/ — {used} used of {total}\n{free} free",
-        "interval": 30,
-        "states": {
-            "warning": 75,
-            "critical": 90
-        }
-    },
-
     "wireplumber": {
         "format": "{icon} {volume}%",
         "format-muted": "󰝟 Muted",
@@ -107,6 +97,24 @@
         "tooltip-format-ethernet": "Ethernet\nIP: {ipaddr}",
         "tooltip-format-disconnected": "No network",
         "on-click": "nm-connection-editor"
+    },
+
+    "custom/cpu-cores": {
+        "exec": "~/.config/waybar/scripts/cpu-cores.sh",
+        "return-type": "json",
+        "interval": 3,
+        "format": "{}"
+    },
+
+    "disk": {
+        "path": "/",
+        "format": "󰋊 {percentage_used}%",
+        "tooltip-format": "/ — {used} used of {total}\n{free} free",
+        "interval": 30,
+        "states": {
+            "warning": 75,
+            "critical": 90
+        }
     },
 
     "mpris": {
