@@ -1,0 +1,15 @@
+# ~/.config/yazi/yazi.toml
+# Enter on a file routes through yazi-nvim-open, which opens it in a single
+# reused neovim pane inside the current devtmux/tmux session.
+
+[opener]
+edit = [
+  { run = 'yazi-nvim-open "$@"', desc = "Open in devtmux nvim", block = false, for = "unix" },
+]
+
+[open]
+# Catch-all: send every file through our nvim opener. Directories are still
+# handled by yazi's normal navigation (Enter descends into them).
+rules = [
+  { url = "*", use = "edit" },
+]
