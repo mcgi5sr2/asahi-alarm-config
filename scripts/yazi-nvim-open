@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# yazi-nvim-open — open file(s) from yazi in a single reused neovim pane.
+#
+# First file: spawns nvim (listening on a per-session socket) in a pane
+# on the right. Every file after that is sent to that SAME nvim as a new
+# buffer via --remote, and the editor pane is focused. No pane pile-up.
+#
+# Invoked by yazi's opener (see ~/.config/yazi/yazi.toml). Falls back to a
+# plain `nvim` if we're somehow not inside a devtmux session.
+
+set -euo pipefail
+
+# Not inside tmux? Just open normally and bail.
+if [ -z "${TMUX:-}" ]; then
+  exec nvim "$@"
+fi
+
+session=$(tmux display -p '#S')
+sock=$(tmux show-option -qv @nvim_sock)
+[ -z "$sock" ] && sock="/tmp/devtmux-nvim-${session}.sock"
+
+editor_live() {
+  local ed="$1"
+  [ -n "$ed" ] || return 1
+  tmux list-panes -a -F '#{pane_id}' | grep -qx "$ed" || return 1
+  [ -S "$sock" ] || return 1
+  return 0
+}
+
+open_one() {
+  local file
+  file=$(realpath -- "$1")
+  local editor
+  editor=$(tmux show-option -qv @editor_pane)
+
+  if editor_live "$editor" && nvim --server "$sock" --remote "$file" 2>/dev/null; then
+    tmux select-pane -t "$editor"
+    return
+  fi
+
+  # No live editor — create one. Split the shell pane so nvim sits top-right.
+  rm -f "$sock"
+  local target
+  target=$(tmux show-option -qv @shell_pane)
+  [ -n "$target" ] || target="${TMUX_PANE}"
+  editor=$(tmux split-window -P -F '#{pane_id}' -v -b -l '65%' \
+             -t "$target" -c "#{pane_current_path}" \
+             "nvim --listen '$sock' '$file'")
+  tmux set-option @editor_pane "$editor"
+  tmux select-pane -t "$editor"
+}
+
+for f in "$@"; do
+  open_one "$f"
+done
