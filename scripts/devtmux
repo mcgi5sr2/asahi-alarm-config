@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# devtmux — open a tmux dev session with a yazi file-tree pane on the left
+# and your shell on the right. Mouse is enabled via ~/.config/tmux/tmux.conf.
+#
+# Usage:
+#   devtmux [session-name] [start-dir]
+#   (defaults: session "dev", current directory)
+
+set -euo pipefail
+
+SESSION="${1:-dev}"
+START_DIR="${2:-$PWD}"
+TREE_WIDTH="${DEVTMUX_TREE_WIDTH:-30}"   # columns for the file-tree pane
+
+cd "$START_DIR"
+
+# If the session already exists, just attach (or switch, if already inside tmux).
+if tmux has-session -t "$SESSION" 2>/dev/null; then
+  if [ -n "${TMUX:-}" ]; then
+    exec tmux switch-client -t "$SESSION"
+  else
+    exec tmux attach-session -t "$SESSION"
+  fi
+fi
+
+# Create a detached session; this first pane is the shell (ends up on the right).
+tmux new-session -d -s "$SESSION" -c "$START_DIR" -n main
+SHELL_PANE=$(tmux display -p -t "$SESSION:main" '#{pane_id}')
+
+# Split off a narrow pane on the LEFT running the file tree.
+tmux split-window -h -b -l "$TREE_WIDTH" -t "$SHELL_PANE" -c "$START_DIR" "yazi"
+
+# Record where the shell lives and which socket the reused nvim will listen on,
+# so yazi-nvim-open knows where to put / find the editor.
+tmux set-option -t "$SESSION" @shell_pane "$SHELL_PANE"
+tmux set-option -t "$SESSION" @nvim_sock "/tmp/devtmux-nvim-${SESSION}.sock"
+
+# Put the cursor in the right-hand shell pane.
+tmux select-pane -t "$SHELL_PANE"
+
+# Attach (or switch if we're already inside tmux).
+if [ -n "${TMUX:-}" ]; then
+  exec tmux switch-client -t "$SESSION"
+else
+  exec tmux attach-session -t "$SESSION"
+fi
