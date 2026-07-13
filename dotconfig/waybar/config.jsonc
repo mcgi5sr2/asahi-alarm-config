@@ -10,7 +10,7 @@
     "modules-left": [
         "hyprland/workspaces",
         "hyprland/window",
-        "custom/spotify"
+        "mpris"
     ],
 
     "modules-center": [
@@ -22,8 +22,8 @@
         "disk",
         "custom/power-draw",
         "custom/nightlight",
-        "custom/wifi",
-        "custom/volume",
+        "network",
+        "wireplumber",
         "tray",
         "custom/power"
     ],
@@ -55,20 +55,33 @@
         "tooltip-format": "<big>{:%B %Y}</big>\n<tt><small>{calendar}</small></tt>"
     },
 
-    "custom/volume": {
-        "exec": "~/.config/waybar/scripts/volume.sh",
-        "return-type": "json",
-        "interval": 2,
-        "format": "{}",
+    "wireplumber": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 Muted",
+        "format-icons": ["󰕿", "󰖀", "󰕾"],
+        "states": {
+            "quiet": 0,
+            "healthy": 30,
+            "loud": 71
+        },
+        "tooltip-format": "Volume: {volume}%",
         "on-click": "pavucontrol",
         "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
     },
 
-    "custom/wifi": {
-        "exec": "~/.config/waybar/scripts/wifi.sh",
-        "return-type": "json",
-        "interval": 5,
-        "format": "{}",
+    "network": {
+        "format-wifi": "{icon}  {essid}",
+        "format-ethernet": "󰈀 {ipaddr}",
+        "format-disconnected": "󰤭 Disconnected",
+        "format-icons": ["󰤢", "󰤥", "󰤨"],
+        "states": {
+            "weak": 0,
+            "medium": 40,
+            "strong": 70
+        },
+        "tooltip-format-wifi": "SSID: {essid}\nSignal: {signalStrength}%\nIP: {ipaddr}",
+        "tooltip-format-ethernet": "Ethernet\nIP: {ipaddr}",
+        "tooltip-format-disconnected": "No network",
         "on-click": "nm-connection-editor"
     },
 
@@ -90,10 +103,18 @@
         }
     },
 
-    "custom/spotify": {
-        "exec": "~/.config/waybar/mediaplayer.py --player spotify",
-        "format": "{}  ",
-        "return-type": "json",
+    "mpris": {
+        "player": "spotify",
+        "format": "{player_icon} {title}  ",
+        "format-paused": "{status_icon} {title}  ",
+        "player-icons": {
+            "default": "▶",
+            "spotify": ""
+        },
+        "status-icons": {
+            "paused": ""
+        },
+        "max-length": 45,
         "on-click": "playerctl play-pause",
         "on-scroll-up": "playerctl next",
         "on-scroll-down": "playerctl previous"
