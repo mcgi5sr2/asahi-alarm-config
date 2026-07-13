@@ -53,6 +53,7 @@ window#waybar {
     font-weight: bold;
 }
 
+#battery,
 #network,
 #mpris,
 #custom-nightlight,
@@ -95,6 +96,22 @@ window#waybar {
 #network.weak         { color: #f38ba8; }
 #network.disconnected { color: #555555; }
 #network.ethernet     { color: #5fbf75; }
+
+#battery.charging { color: #a8d8a8; }
+#battery.plugged  { color: #5fbf75; }
+
+#battery.warning:not(.charging) {
+    color: #fab387;
+}
+
+#battery.critical:not(.charging) {
+    color: #f38ba8;
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    to { color: transparent; }
+}
 
 #tray { padding: 0 6px; }
 
