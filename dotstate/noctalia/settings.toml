@@ -1,5 +1,22 @@
 config_version = 14
 
+[bar.default]
+end = [
+    "tray",
+    "notifications",
+    "clipboard",
+    "network",
+    "bluetooth",
+    "volume",
+    "brightness",
+    "battery",
+    "cpu",
+    "control-center",
+    "session"
+]
+margin_ends = 0
+start = [ "launcher", "scale", "wallpaper", "workspaces", "media" ]
+
 [lockscreen_widgets]
 enabled = false
 schema_version = 2
@@ -13,11 +30,11 @@ widget_order = [ "lockscreen-login-box@eDP-1" ]
     [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
     box_height = 196.0
     box_width = 810.0
-    cx = 1008.0
-    cy = 1078.0
+    cx = 1260.0
+    cy = 1347.5
     output = "eDP-1"
-    placement_height = 1260.0
-    placement_width = 2016.0
+    placement_height = 1575.0
+    placement_width = 2520.0
     rotation = 0.0
     type = "login_box"
 
@@ -36,6 +53,9 @@ widget_order = [ "lockscreen-login-box@eDP-1" ]
         show_session_buttons = true
         show_unlock_hint = true
         show_weather = true
+
+[shell.launcher]
+compact = true
 
 [theme]
 builtin = "Noctalia"
@@ -71,10 +91,23 @@ type = "brightness"
 color = "primary"
 type = "clock"
 
+[widget.media]
+hide_when_no_media = true
+max_length = 260
+title_scroll = "on_hover"
+type = "media"
+
 [widget.network]
 color = "#6a9955"
 icon_color = "#6a9955"
 type = "network"
+
+[widget.scale]
+glyph = "aspect-ratio"
+type = "custom_button"
+
+    [widget.scale.actions]
+    left = "exec /home/mcgi5sr2/.config/hypr/scripts/scale-switcher.sh"
 
 [widget.session]
 color = "error"
