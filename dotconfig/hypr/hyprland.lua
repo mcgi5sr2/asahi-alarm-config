@@ -139,6 +139,9 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("blueman-applet")
     -- Asahi: displays not always ready at startup — reload forces correct scale
     hl.exec_cmd("sleep 3 && hyprctl reload")
+    -- Disable the trackpad while an external mouse is connected. Starts after
+    -- the reload above, which would otherwise reset the device back to enabled.
+    hl.exec_cmd("sleep 5 && ~/.config/hypr/trackpad.sh watch")
 end)
 
 ---------------------
@@ -153,6 +156,7 @@ hl.bind(mainMod .. " + SPACE",  hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P",      hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J",      hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + L",      hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("~/.config/hypr/trackpad.sh toggle"))
 hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd([[systemctl --user is-active hypridle && (systemctl --user stop hypridle && notify-send "Hypridle" "Idle inhibited") || (systemctl --user start hypridle && notify-send "Hypridle" "Idle enabled")]]))
 
 -- Screenshots
