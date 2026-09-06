@@ -1,0 +1,92 @@
+config_version = 14
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = [ "lockscreen-login-box@eDP-1" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1008.0
+    cy = 1078.0
+    output = "eDP-1"
+    placement_height = 1260.0
+    placement_width = 2016.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[theme]
+builtin = "Noctalia"
+custom_palette = "VSCodeDark"
+mode = "dark"
+source = "custom"
+
+[wallpaper.default]
+path = "/home/mcgi5sr2/Pictures/grisWallpapers/gris01.png"
+
+[wallpaper.last]
+path = "/home/mcgi5sr2/Pictures/grisWallpapers/gris01.png"
+
+[wallpaper.monitors.eDP-1]
+path = "/home/mcgi5sr2/Pictures/grisWallpapers/gris01.png"
+
+[widget.battery]
+color = "#4ec9b0"
+icon_color = "#4ec9b0"
+type = "battery"
+
+[widget.bluetooth]
+color = "#569cd6"
+icon_color = "#569cd6"
+type = "bluetooth"
+
+[widget.brightness]
+color = "#d7ba7d"
+icon_color = "#d7ba7d"
+type = "brightness"
+
+[widget.clock]
+color = "primary"
+type = "clock"
+
+[widget.network]
+color = "#6a9955"
+icon_color = "#6a9955"
+type = "network"
+
+[widget.session]
+color = "error"
+icon_color = "error"
+type = "session"
+
+[widget.volume]
+color = "tertiary"
+icon_color = "tertiary"
+type = "volume"
+
+[widget.workspaces]
+focused_color = "primary"
+occupied_color = "secondary"
+type = "workspaces"
