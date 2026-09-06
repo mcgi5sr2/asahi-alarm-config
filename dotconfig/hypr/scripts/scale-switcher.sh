@@ -14,17 +14,18 @@ H=1890
 # Coarse, whole-pixel ladder, ordered "from here up to native" (estate increases downward).
 SCALES=(1.50 1.40 1.20 1.00)
 
+# Logical pixels along one axis for a given native length and scale.
+logical() { awk -v n="$1" -v s="$2" 'BEGIN{printf "%d", n/s}'; }
+
 # Current scale for eDP-1 (parsed from hyprctl text; no jq dependency).
 cur=$(hyprctl monitors 2>/dev/null | awk '/^Monitor '"$MON"' /{f=1} f&&/scale:/{print $2; exit}')
 
 # Build menu lines: "<mark> <scale>  ->  <logical WxH>[ (native)]".
 lines=()
 for s in "${SCALES[@]}"; do
-  lw=$(awk -v w="$W" -v s="$s" 'BEGIN{printf "%d", w/s}')
-  lh=$(awk -v h="$H" -v s="$s" 'BEGIN{printf "%d", h/s}')
   tag=""; [ "$s" = "1.00" ] && tag=" (native)"
   mark="   "; [ "$s" = "$cur" ] && mark=" ● "
-  lines+=("$(printf '%b%s  →  %d×%d%s' "$mark" "$s" "$lw" "$lh" "$tag")")
+  lines+=("$(printf '%s%s  →  %s×%s%s' "$mark" "$s" "$(logical "$W" "$s")" "$(logical "$H" "$s")" "$tag")")
 done
 
 choice=$(printf '%s\n' "${lines[@]}" | noctalia dmenu -p "Display scale") || exit 0
@@ -34,7 +35,7 @@ choice=$(printf '%s\n' "${lines[@]}" | noctalia dmenu -p "Display scale") || exi
 scale=$(printf '%s' "$choice" | grep -oE '[0-9]+\.[0-9]+' | head -1)
 [ -z "$scale" ] && exit 0
 
-hyprctl keyword monitor "${MON},${MODE},${POS},${scale}"
-lw=$(awk -v w="$W" -v s="$scale" 'BEGIN{printf "%d", w/s}')
-lh=$(awk -v h="$H" -v s="$scale" 'BEGIN{printf "%d", h/s}')
-noctalia msg notification-show "Display scale" "${MON} → ${scale}  (${lw}×${lh})" 2>/dev/null || true
+# Hyprland uses the Lua config parser here, so `hyprctl keyword` is rejected;
+# drive the runtime hl.monitor() API via `hyprctl eval` instead.
+hyprctl eval "hl.monitor({ output = \"${MON}\", mode = \"${MODE}\", position = \"${POS}\", scale = ${scale} })"
+noctalia msg notification-show "Display scale" "${MON} → ${scale}  ($(logical "$W" "$scale")×$(logical "$H" "$scale"))" 2>/dev/null || true
