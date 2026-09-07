@@ -22,30 +22,21 @@ window#waybar {
 #workspaces button {
     padding: 0 8px;
     color: #6c7080;
-    background: rgba(80, 85, 95, 0.4);
-    border-radius: 6px;
+    background: transparent;
+    border-radius: 8px;
     margin: 4px 2px;
     transition: all 0.2s ease;
 }
 
 #workspaces button:hover {
-    background-image: linear-gradient(to bottom, #0d5f9a, #061f33);
-    background-color: transparent;
-    box-shadow: none;
-    color: #ffffff;
+    background: rgba(23, 147, 209, 0.12);
+    color: #d0d0d0;
 }
 
 #workspaces button.active {
-    background-image: linear-gradient(to bottom, #0d5f9a, #061f33);
-    background-color: transparent;
-    color: #ffffff;
-}
-
-#workspaces button.active:hover {
-    background-image: linear-gradient(to bottom, #061f33, #0d5f9a);
-    background-color: transparent;
-    box-shadow: none;
-    color: #ffffff;
+    background: rgba(23, 147, 209, 0.22);
+    color: #1793d1;
+    border-bottom: 2px solid #1793d1;
 }
 
 #workspaces button.urgent {
@@ -63,12 +54,12 @@ window#waybar {
 }
 
 #battery,
-#disk,
 #network,
 #mpris,
-#wireplumber,
 #custom-nightlight,
 #custom-power-draw,
+#custom-cpu-cores,
+#disk,
 #tray,
 #custom-power,
 #clock,
@@ -81,12 +72,20 @@ window#waybar {
     color: #d0d0d0;
 }
 
+#wireplumber {
+    padding: 0 10px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    background: rgba(15, 22, 32, 0.78);
+}
+
 #wireplumber:hover,
 #network:hover {
     background: rgba(23, 147, 209, 0.18);
     color: #ffffff;
 }
 
+/* Volume / wifi keep semantic state colours */
 #wireplumber.healthy { color: #5fbf75; }
 #wireplumber.loud    { color: #f38ba8; }
 #wireplumber.quiet   { color: #1793d1; }
@@ -125,10 +124,20 @@ window#waybar {
     background-color: rgba(23, 147, 209, 0.25);
 }
 
+/* GPU power readout: idle (arch blue) -> medium (orange) -> critical (red) */
 #custom-power-draw          { color: #1793d1; }
 #custom-power-draw.idle     { color: #1793d1; }
 #custom-power-draw.medium   { color: #fab387; }
 #custom-power-draw.critical { color: #f38ba8; }
+
+#custom-cpu-cores {
+    color: #6db8e0;
+    font-family: "FiraCode Nerd Font", monospace;
+    letter-spacing: 1px;
+}
+
+#custom-cpu-cores.high     { color: #fab387; }
+#custom-cpu-cores.critical { color: #f38ba8; }
 
 #disk          { color: #1793d1; }
 #disk.warning  { color: #fab387; }
