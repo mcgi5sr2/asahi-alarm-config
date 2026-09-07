@@ -1,0 +1,30 @@
+// Reference config for the Asahi MacBook (Apple Silicon), captured from a
+// "minimal niri config for evaluation" built directly on that machine on
+// 2026-09-07 (origin/noctalia-migration, since folded into this branch —
+// niri/noctalia have nothing arch/platform-specific, only the input/output
+// facts below differ per machine).
+//
+// To use on that machine: copy this file over dotconfig/niri/host.kdl.
+//
+// Untested here (no US-layout Apple keyboard or 3024x1890 panel to check
+// against) — treat mode/scale as a starting point, confirm with
+// `niri msg outputs` on that machine same as host.kdl's x64 comments explain.
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+    }
+    touchpad {
+        tap
+    }
+    focus-follows-mouse
+}
+
+// Native scale = maximum screen estate on the 3024x1890 Retina panel
+// (ignored when running nested under the winit backend).
+output "eDP-1" {
+    mode "3024x1890@120"
+    scale 1.0
+}

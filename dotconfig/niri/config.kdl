@@ -1,0 +1,257 @@
+// ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+// ┃                    niri Configuration                       ┃
+// ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+// Sibling session to Hyprland (dotconfig/hypr) — not a replacement yet.
+// Noctalia is the shell here: bar, launcher, notifications, OSDs,
+// wallpaper, idle handling and the lock screen all come from it, so
+// mako/waybar/hypridle/hyprpaper/wob equivalents are intentionally absent.
+// https://niri-wm.github.io/niri/Configuration:-Introduction
+//
+// This file is machine-agnostic (niri/noctalia have no arch/platform-
+// specific parts, x64 and Apple Silicon alike) and is meant to be
+// identical on every machine. The one exception is host.kdl (included
+// below), which carries the actual keyboard layout + monitor facts for
+// whichever machine it's deployed on — see dotconfig/niri/hosts/ for the
+// other known machines' versions of that file.
+
+// Mirrors dotconfig/hypr/config/environment.lua (HYPRCURSOR_* vars are
+// Hyprland-specific and dropped; niri only needs the plain XCURSOR ones).
+environment {
+    XCURSOR_THEME "capitaine-cursors"
+    XCURSOR_SIZE "24"
+    QT_CURSOR_SIZE "24"
+}
+
+// Per-machine input (keyboard layout) + output (monitor) facts — the only
+// genuinely machine-specific part of this config. See host.kdl and
+// dotconfig/niri/hosts/ for other known machines.
+include "host.kdl"
+
+// No client-side decorations — niri draws its own borders/shadows below.
+prefer-no-csd
+
+layout {
+    gaps 8
+
+    // Don't recenter the focused column when it's already fully visible —
+    // less view-jitter while navigating a wide scrollable row.
+    center-focused-column "never"
+
+    focus-ring {
+        width 2
+        active-gradient from="#82dccc" to="#01ccff" angle=90
+        inactive-color "#182545"
+    }
+
+    border {
+        off
+    }
+
+    shadow {
+        on
+        softness 30
+        spread 3
+        color "#00000066"
+    }
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+}
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// Noctalia is the shell: bar, tray, notifications, OSDs, wallpaper,
+// idle/lock and network status all live here instead of separate daemons.
+spawn-at-startup "noctalia" "--daemon"
+
+// Polkit auth-agent dialogs — same binary Hyprland's autostart uses.
+spawn-at-startup "/usr/lib/polkit-kde-authentication-agent-1"
+
+// X11 app compatibility (niri has no built-in Xwayland, unlike Hyprland).
+// niri auto-spawns "xwayland-satellite" on the PATH if present — it's not
+// installed yet, so X11-only apps won't work until you
+// `sudo pacman -S xwayland-satellite` (confirmed via a nested test run:
+// niri logs a graceful warning and disables the integration without it).
+
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"^org\.pulseaudio\.pavucontrol$"#
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"^blueman-manager$"#
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"^(polkit-gnome-authentication-agent-1|polkit-kde-authentication-agent-1|org\.kde\.polkit-kde-authentication-agent-1)$"#
+    open-floating true
+}
+
+// Noctalia's Settings window (theme/palette picker lives here) — without
+// this it tiles into the scrollable column layout instead of opening as
+// a normal floating panel. app-id + sizing per Noctalia's own niri docs.
+window-rule {
+    match app-id=r#"^dev\.noctalia\.Noctalia$"#
+    open-floating true
+    default-column-width { fixed 1080; }
+    default-window-height { fixed 920; }
+}
+
+window-rule {
+    match title="^(Open File|Save File)$"
+    open-floating true
+}
+
+window-rule {
+    geometry-corner-radius 8
+    clip-to-geometry true
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+// Required per Noctalia's niri compositor docs — without it, window
+// activation requests from Noctalia panels (settings, notifications,
+// control-center) can be silently ignored.
+debug {
+    honor-xdg-activation-with-invalid-serial
+}
+
+binds {
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    // ======= Application launchers (parity with dotconfig/hypr/config/keybinds.lua) =======
+    Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
+    Mod+E      hotkey-overlay-title="File Manager: dolphin"  { spawn "dolphin"; }
+    Mod+Space  hotkey-overlay-title="App Launcher: Noctalia" { spawn "noctalia" "msg" "panel-open" "launcher"; }
+
+    // Noctalia's own screenshot tooling (replaces grim/slurp/swappy + hyprshot).
+    Mod+S       { spawn "noctalia" "msg" "screenshot-region"; }
+    Mod+Shift+S { spawn "noctalia" "msg" "screenshot-fullscreen"; }
+
+    // Noctalia session actions (replace hyprlock / loginctl terminate-user).
+    Mod+L         hotkey-overlay-title="Lock the Screen" { spawn "noctalia" "msg" "session" "lock"; }
+    Mod+Shift+M   hotkey-overlay-title="Log Out"         { spawn "noctalia" "msg" "session" "logout"; }
+
+    // Control center / settings, for parity with Hyprland's Mod+O (bar reload).
+    Mod+O { spawn "noctalia" "msg" "panel-open" "control-center"; }
+
+    // Full Settings window — theme mode lives in control-center above, but
+    // the color palette picker (Appearance > Theme > Palette, including the
+    // custom ones in dotconfig/noctalia/palettes/) only lives in here.
+    Mod+Shift+O hotkey-overlay-title="Settings (theme / palette)" { spawn "noctalia" "msg" "settings-toggle"; }
+
+    // ======= Volume / mic — routed through Noctalia so its OSD fires =======
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-up"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-down"; }
+    XF86AudioMute         allow-when-locked=true { spawn "noctalia" "msg" "volume-mute"; }
+    XF86AudioMicMute      allow-when-locked=true { spawn "noctalia" "msg" "mic-mute"; }
+
+    // ======= Playback control =======
+    XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
+    XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
+
+    // ======= Screen brightness — routed through Noctalia for its OSD =======
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "noctalia" "msg" "brightness-up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia" "msg" "brightness-down"; }
+
+    // ======= Window management (niri's scrollable-column defaults) =======
+    Mod+Q repeat=false { close-window; }
+
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+
+    // Vim-style duplicates of the above (Mod+L is already "Lock the
+    // Screen" below, so there's no H/J/K/L full set — right stays arrow-only).
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
+    Mod+Ctrl+Right { move-column-right; }
+
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Right { focus-monitor-right; }
+
+    // Send the focused window (not just the column) to another monitor.
+    Mod+Ctrl+Shift+Left  { move-window-to-monitor-left; }
+    Mod+Ctrl+Shift+Down  { move-window-to-monitor-down; }
+    Mod+Ctrl+Shift+Up    { move-window-to-monitor-up; }
+    Mod+Ctrl+Shift+Right { move-window-to-monitor-right; }
+
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up   { focus-workspace-up; }
+    Mod+U         { focus-workspace-down; }
+    Mod+I         { focus-workspace-up; }
+
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+    Mod+Comma        { consume-window-into-column; }
+    Mod+Period       { expel-window-from-column; }
+
+    Mod+R       { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-column-width-back; }
+
+    Mod+F       { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+    Mod+W       { toggle-column-tabbed-display; }
+    Mod+C       { center-column; }
+
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    Print       { screenshot-screen; }
+    Alt+Print   { screenshot-window; }
+
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+    Mod+Shift+E     { quit; }
+    Ctrl+Alt+Delete { quit; }
+    Mod+Shift+P     { power-off-monitors; }
+}
