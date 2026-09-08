@@ -78,6 +78,18 @@ spawn-at-startup "/usr/lib/polkit-kde-authentication-agent-1"
 // `sudo pacman -S xwayland-satellite` (confirmed via a nested test run:
 // niri logs a graceful warning and disables the integration without it).
 
+// Screen-share / ScreenCast portal: /usr/share/xdg-desktop-portal/niri-portals.conf
+// (shipped by the niri package) prefers the "gnome" backend, but it's not
+// pulled in automatically — `sudo pacman -S xdg-desktop-portal-gnome` is
+// required or screen-share (e.g. in browsers for Meet) silently fails, since
+// xdg-desktop-portal-gtk (the fallback) doesn't implement ScreenCast. Pulls
+// in nautilus/gtk4/libadwaita/gnome-desktop-4 as deps — confirmed against
+// niri's own wiki that gnome is the only supported screencast backend
+// (xdg-desktop-portal-wlr is not a substitute and can conflict if both are
+// installed). Keep xdg-desktop-portal-hyprland installed too if Hyprland is
+// still a sibling session (dotconfig/hypr) — each session's XDG_CURRENT_DESKTOP
+// picks its own matching *-portals.conf, so they don't conflict.
+
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     open-floating true
