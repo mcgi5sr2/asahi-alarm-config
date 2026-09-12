@@ -4,7 +4,7 @@
 // niri is the desktop session on this machine (Hyprland retired).
 // Noctalia is the shell here: bar, launcher, notifications, OSDs,
 // wallpaper, idle handling and the lock screen all come from it, so
-// mako/waybar/hypridle/hyprpaper/wob equivalents are intentionally absent.
+// separate bar/notification/idle/wallpaper daemons are intentionally absent.
 // https://niri-wm.github.io/niri/Configuration:-Introduction
 //
 // This file is machine-agnostic (niri/noctalia have no arch/platform-
@@ -71,7 +71,7 @@ spawn-at-startup "noctalia" "--daemon"
 // Polkit auth-agent: provided by noctalia's built-in agent
 // (polkit_agent=true in noctalia settings) — no separate spawn needed.
 
-// X11 app compatibility (niri has no built-in Xwayland, unlike Hyprland).
+// X11 app compatibility (niri has no built-in Xwayland).
 // niri auto-spawns "xwayland-satellite" on the PATH if present — it's not
 // installed yet, so X11-only apps won't work until you
 // `sudo pacman -S xwayland-satellite` (confirmed via a nested test run:
@@ -141,20 +141,20 @@ debug {
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
-    // ======= Application launchers (parity with dotconfig/hypr/config/keybinds.lua) =======
+    // ======= Application launchers =======
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+E      hotkey-overlay-title="File Manager: dolphin"  { spawn "dolphin"; }
     Mod+Space  hotkey-overlay-title="App Launcher: Noctalia" { spawn "noctalia" "msg" "panel-open" "launcher"; }
 
-    // Noctalia's own screenshot tooling (replaces grim/slurp/swappy + hyprshot).
+    // Noctalia's own screenshot tooling (replaces grim/slurp/swappy).
     Mod+S       { spawn "noctalia" "msg" "screenshot-region"; }
     Mod+Shift+S { spawn "noctalia" "msg" "screenshot-fullscreen"; }
 
-    // Noctalia session actions (replace hyprlock / loginctl terminate-user).
+    // Noctalia session actions (lock / logout).
     Mod+L         hotkey-overlay-title="Lock the Screen" { spawn "noctalia" "msg" "session" "lock"; }
     Mod+Shift+M   hotkey-overlay-title="Log Out"         { spawn "noctalia" "msg" "session" "logout"; }
 
-    // Control center / settings, for parity with Hyprland's Mod+O (bar reload).
+    // Control center / settings.
     Mod+O { spawn "noctalia" "msg" "panel-open" "control-center"; }
 
     // Full Settings window — theme mode lives in control-center above, but

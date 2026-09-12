@@ -1,50 +1,24 @@
 // Per-machine input + output config, included from config.kdl.
-// This is the x64 Dell CachyOS laptop's config (hostname DELLJKLINUX).
-// For other machines, see dotconfig/niri/hosts/ for reference configs —
-// copy the matching one over this file (or write a new one) rather than
-// editing config.kdl itself, which is meant to be identical everywhere.
+// This machine: Asahi Linux MacBook (Apple Silicon), hostname s-mbp-Asahi.
+// Facts confirmed live via `niri msg outputs` on 2026-09-12.
+// For other machines see dotconfig/niri/hosts/ — copy the matching one here.
 
 input {
     keyboard {
         xkb {
             layout "gb"
-            model "latitude"
         }
     }
-
     touchpad {
         tap
-        natural-scroll
     }
-
-    // Mirrors Hyprland's follow_mouse = 2 (focus follows mouse).
-    focus-follows-mouse max-scroll-amount="0%"
+    focus-follows-mouse
 }
 
-// Modes are pinned to the exact strings from `niri msg outputs` — a
-// near-miss like "@144" doesn't match "@143.973" and niri silently falls
-// back to each monitor's EDID-preferred mode (60Hz on DP-1, 120Hz on
-// HDMI-A-1 here), quietly losing the high refresh rate.
-// scale is pinned to 1.0 on all three so logical size == pixel size and
-// the x-offsets below (1920, 4480) stay correct — niri's DPI-based
-// auto-scale otherwise guesses 1.25 on eDP-1 (a normal-DPI 1920x1080
-// panel, not actually HiDPI here), which shrinks its logical width to
-// 1536 and opens a dead gap between it and DP-1 that the mouse can't
-// cross.
+// Single internal Retina panel. Mode pinned to the exact string from
+// `niri msg outputs` (also the preferred mode). Native scale 1.0 gives
+// maximum logical desktop space on the 3024x1890 panel.
 output "eDP-1" {
-    mode "1920x1080@60.002"
-    position x=0 y=0
-    scale 1.0
-}
-
-output "DP-1" {
-    mode "2560x1440@143.973"
-    position x=1920 y=0
-    scale 1.0
-}
-
-output "HDMI-A-1" {
-    mode "2560x1440@143.933"
-    position x=4480 y=0
+    mode "3024x1890@120.000"
     scale 1.0
 }

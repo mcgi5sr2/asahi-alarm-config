@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install the custom "250956" sddm-astronaut-theme variant — a warm-amber
-# palette matching the hyprlock lock screen.
+# palette matching the lock screen.
 #
 # Vendors:
 #   sddm-astronaut-theme/Themes/250956.conf      custom theme config
