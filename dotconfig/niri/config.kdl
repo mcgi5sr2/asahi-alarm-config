@@ -1,7 +1,7 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 // ┃                    niri Configuration                       ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-// Sibling session to Hyprland (dotconfig/hypr) — not a replacement yet.
+// niri is the desktop session on this machine (Hyprland retired).
 // Noctalia is the shell here: bar, launcher, notifications, OSDs,
 // wallpaper, idle handling and the lock screen all come from it, so
 // mako/waybar/hypridle/hyprpaper/wob equivalents are intentionally absent.
@@ -14,8 +14,7 @@
 // whichever machine it's deployed on — see dotconfig/niri/hosts/ for the
 // other known machines' versions of that file.
 
-// Mirrors dotconfig/hypr/config/environment.lua (HYPRCURSOR_* vars are
-// Hyprland-specific and dropped; niri only needs the plain XCURSOR ones).
+// Cursor theme + size for Wayland and Qt apps.
 environment {
     XCURSOR_THEME "capitaine-cursors"
     XCURSOR_SIZE "24"
@@ -86,9 +85,7 @@ spawn-at-startup "noctalia" "--daemon"
 // in nautilus/gtk4/libadwaita/gnome-desktop-4 as deps — confirmed against
 // niri's own wiki that gnome is the only supported screencast backend
 // (xdg-desktop-portal-wlr is not a substitute and can conflict if both are
-// installed). Keep xdg-desktop-portal-hyprland installed too if Hyprland is
-// still a sibling session (dotconfig/hypr) — each session's XDG_CURRENT_DESKTOP
-// picks its own matching *-portals.conf, so they don't conflict.
+// installed).
 
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"

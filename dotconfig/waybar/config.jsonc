@@ -6,56 +6,27 @@
     "margin-top": 6,
     "margin-left": 10,
     "margin-right": 10,
-
     "modules-left": [
-        "hyprland/workspaces",
-        "hyprland/window",
         "mpris"
     ],
-
     "modules-center": [
         "clock"
     ],
-
     "modules-right": [
         "battery",
         "custom/cpu-cores",
         "disk",
         "custom/power-draw",
-        "custom/nightlight",
         "network",
         "wireplumber",
         "tray",
         "custom/power"
     ],
-
-    "hyprland/workspaces": {
-        "format": "{id}",
-        "on-click": "activate",
-        "sort-by-number": true
-    },
-
-    "hyprland/window": {
-        "format": "{title}",
-        "icon": true,
-        "icon-size": 16,
-        "max-length": 60,
-        "separate-outputs": true,
-        "rewrite": {
-            "(.*) — Mozilla Firefox": "$1",
-            "(.*) - Mozilla Firefox": "$1",
-            "(.*) - Visual Studio Code": "$1",
-            "(.*) — Dolphin": "$1",
-            "(.*) - Discord": "$1"
-        }
-    },
-
     "clock": {
         "format": " {:%Y-%m-%d  %H:%M:%S}",
         "interval": 1,
         "tooltip-format": "<big>{:%B %Y}</big>\n<tt><small>{calendar}</small></tt>"
     },
-
     "battery": {
         "states": {
             "good": 80,
@@ -65,14 +36,29 @@
         "format": "{icon} {capacity}%",
         "format-charging": "󰂄 {capacity}%",
         "format-plugged": "󰚥 {capacity}%",
-        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "format-icons": [
+            "󰂎",
+            "󰁺",
+            "󰁻",
+            "󰁼",
+            "󰁽",
+            "󰁾",
+            "󰁿",
+            "󰂀",
+            "󰂁",
+            "󰂂",
+            "󰁹"
+        ],
         "tooltip-format": "{timeTo}\nCycles: {cycles}"
     },
-
     "wireplumber": {
         "format": "{icon} {volume}%",
         "format-muted": "󰝟 Muted",
-        "format-icons": ["󰕿", "󰖀", "󰕾"],
+        "format-icons": [
+            "󰕿",
+            "󰖀",
+            "󰕾"
+        ],
         "states": {
             "quiet": 0,
             "healthy": 30,
@@ -82,12 +68,15 @@
         "on-click": "pavucontrol",
         "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
     },
-
     "network": {
         "format-wifi": "{icon}  {essid}",
         "format-ethernet": "󰈀 {ipaddr}",
         "format-disconnected": "󰤭 Disconnected",
-        "format-icons": ["󰤢", "󰤥", "󰤨"],
+        "format-icons": [
+            "󰤢",
+            "󰤥",
+            "󰤨"
+        ],
         "states": {
             "weak": 0,
             "medium": 40,
@@ -98,14 +87,12 @@
         "tooltip-format-disconnected": "No network",
         "on-click": "nm-connection-editor"
     },
-
     "custom/cpu-cores": {
         "exec": "~/.config/waybar/scripts/cpu-cores.sh",
         "return-type": "json",
         "interval": 3,
         "format": "{}"
     },
-
     "disk": {
         "path": "/",
         "format": "󰋊 {percentage_used}%",
@@ -116,7 +103,6 @@
             "critical": 90
         }
     },
-
     "mpris": {
         "player": "spotify",
         "format": "{player_icon} {title}  ",
@@ -133,28 +119,16 @@
         "on-scroll-up": "playerctl next",
         "on-scroll-down": "playerctl previous"
     },
-
-    "custom/nightlight": {
-        "exec": "~/.config/waybar/scripts/hyprsunset-status.sh",
-        "return-type": "json",
-        "interval": "once",
-        "signal": 8,
-        "on-click": "~/.config/waybar/scripts/hyprsunset-toggle.sh",
-        "format": "{}"
-    },
-
     "tray": {
         "spacing": 8,
         "icon-size": 16
     },
-
     "custom/power-draw": {
         "exec": "~/.config/waybar/scripts/power-draw.sh",
         "return-type": "json",
         "interval": 3,
         "format": "{}"
     },
-
     "custom/power": {
         "format": "⏻",
         "tooltip": false,
