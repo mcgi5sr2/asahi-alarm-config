@@ -6,14 +6,14 @@
 //
 // To use on that machine: copy this file over dotconfig/niri/host.kdl.
 //
-// Untested here (no US-layout Apple keyboard or 3024x1890 panel to check
-// against) — treat mode/scale as a starting point, confirm with
-// `niri msg outputs` on that machine same as host.kdl's x64 comments explain.
+// Confirmed live on the machine via `niri msg outputs` on 2026-09-12:
+// single eDP-1 panel, mode 3024x1890@120.000 (preferred), scale 1.0,
+// keyboard layout gb. This is the file to copy over host.kdl on that box.
 
 input {
     keyboard {
         xkb {
-            layout "us"
+            layout "gb"
         }
     }
     touchpad {
@@ -25,6 +25,6 @@ input {
 // Native scale = maximum screen estate on the 3024x1890 Retina panel
 // (ignored when running nested under the winit backend).
 output "eDP-1" {
-    mode "3024x1890@120"
+    mode "3024x1890@120.000"
     scale 1.0
 }

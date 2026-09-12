@@ -69,8 +69,8 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 // idle/lock and network status all live here instead of separate daemons.
 spawn-at-startup "noctalia" "--daemon"
 
-// Polkit auth-agent dialogs — same binary Hyprland's autostart uses.
-spawn-at-startup "/usr/lib/polkit-kde-authentication-agent-1"
+// Polkit auth-agent: provided by noctalia's built-in agent
+// (polkit_agent=true in noctalia settings) — no separate spawn needed.
 
 // X11 app compatibility (niri has no built-in Xwayland, unlike Hyprland).
 // niri auto-spawns "xwayland-satellite" on the PATH if present — it's not
