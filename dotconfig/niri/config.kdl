@@ -1,10 +1,11 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 // ┃                    niri Configuration                       ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-// Sibling session to Hyprland (dotconfig/hypr) — not a replacement yet.
+// The sole desktop session on this machine — it replaced the old
+// Hyprland + waybar/wlogout/mako/SDDM stack (all removed).
 // Noctalia is the shell here: bar, launcher, notifications, OSDs,
 // wallpaper, idle handling and the lock screen all come from it, so
-// mako/waybar/hypridle/hyprpaper/wob equivalents are intentionally absent.
+// no separate bar/notifier/idle/wallpaper daemons are needed.
 // https://niri-wm.github.io/niri/Configuration:-Introduction
 //
 // This file is machine-agnostic (niri/noctalia have no arch/platform-
@@ -14,8 +15,8 @@
 // whichever machine it's deployed on — see dotconfig/niri/hosts/ for the
 // other known machines' versions of that file.
 
-// Mirrors dotconfig/hypr/config/environment.lua (HYPRCURSOR_* vars are
-// Hyprland-specific and dropped; niri only needs the plain XCURSOR ones).
+// HYPRCURSOR_* vars from the old Hyprland env are dropped — niri only
+// needs the plain XCURSOR ones.
 environment {
     XCURSOR_THEME "capitaine-cursors"
     XCURSOR_SIZE "24"
@@ -69,8 +70,12 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 // idle/lock and network status all live here instead of separate daemons.
 spawn-at-startup "noctalia" "--daemon"
 
-// Polkit auth-agent dialogs — same binary Hyprland's autostart uses.
-spawn-at-startup "/usr/lib/polkit-kde-authentication-agent-1"
+// Polkit auth-agent: handled by Noctalia's built-in agent
+// (polkit_agent = true in noctalia/settings.toml). Only one agent can
+// register per session, so we no longer spawn polkit-kde here. Hyprland
+// (the previous polkit-kde-agent / hyprpolkitagent consumer) is gone and
+// niri is the only session, so the polkit-kde-agent package is now safe
+// to uninstall.
 
 // X11 app compatibility (niri has no built-in Xwayland, unlike Hyprland).
 // niri auto-spawns "xwayland-satellite" on the PATH if present — it's not
@@ -86,9 +91,7 @@ spawn-at-startup "/usr/lib/polkit-kde-authentication-agent-1"
 // in nautilus/gtk4/libadwaita/gnome-desktop-4 as deps — confirmed against
 // niri's own wiki that gnome is the only supported screencast backend
 // (xdg-desktop-portal-wlr is not a substitute and can conflict if both are
-// installed). Keep xdg-desktop-portal-hyprland installed too if Hyprland is
-// still a sibling session (dotconfig/hypr) — each session's XDG_CURRENT_DESKTOP
-// picks its own matching *-portals.conf, so they don't conflict.
+// installed).
 
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
@@ -102,11 +105,6 @@ window-rule {
 
 window-rule {
     match app-id=r#"^blueman-manager$"#
-    open-floating true
-}
-
-window-rule {
-    match app-id=r#"^(polkit-gnome-authentication-agent-1|polkit-kde-authentication-agent-1|org\.kde\.polkit-kde-authentication-agent-1)$"#
     open-floating true
 }
 
@@ -144,7 +142,7 @@ debug {
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
-    // ======= Application launchers (parity with dotconfig/hypr/config/keybinds.lua) =======
+    // ======= Application launchers =======
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+E      hotkey-overlay-title="File Manager: dolphin"  { spawn "dolphin"; }
     Mod+Space  hotkey-overlay-title="App Launcher: Noctalia" { spawn "noctalia" "msg" "panel-open" "launcher"; }
@@ -267,3 +265,5 @@ binds {
     Ctrl+Alt+Delete { quit; }
     Mod+Shift+P     { power-off-monitors; }
 }
+
+include "noctalia.kdl"
