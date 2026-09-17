@@ -204,7 +204,7 @@ type = "custom_button"
     [widget.scale.actions]
     left = "exec /home/mcgi5sr2/.config/niri/scripts/scale-switcher.sh"
 [shell]
-app_icon_colorize = true
+app_icon_colorize = false
 avatar_path = ""
 button_borders = true
 card_borders = true
