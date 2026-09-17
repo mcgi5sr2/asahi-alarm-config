@@ -333,6 +333,7 @@ follows_mouse = false                           # Focus on motion after scene ch
 "Mod+Right" = "window-focus-right"
 
 # Window state and layout
+"Mod+Backslash" = "workspace-set-layout:toggle"   # Flip this workspace: scrolling <-> dwindle <-> master
 "Mod+T" = "window-toggle-floating"
 "Mod+Shift+T" = "window-focus-switch-floating"
 "Mod+P" = "window-toggle-pinned"
