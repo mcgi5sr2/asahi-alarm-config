@@ -1,10 +1,12 @@
-// Per-machine input + output config, included from config.kdl.
-// This is the ROG Crosshair workstation's config (hostname
+// Reference config for the ROG Crosshair workstation (hostname
 // mcgi5sr2-System-Product-Name — ASUS ROG Crosshair VIII Hero, NVIDIA
-// RTX 2080 Ti desktop).
-// For other machines, see dotconfig/niri/hosts/ for reference configs —
-// copy the matching one over this file (or write a new one) rather than
-// editing config.kdl itself, which is meant to be identical everywhere.
+// RTX 2080 Ti desktop), captured from `niri msg outputs` on 2026-09-17.
+//
+// To use on that machine: copy this file over dotconfig/niri/host.kdl.
+//
+// Desktop, so no touchpad and no keyboard model. Dual 2560x1440 panels
+// side by side at scale 1.0 (logical size == pixel size), DP-3 left,
+// DP-2 right — the x-offset below (2560) depends on that.
 
 input {
     keyboard {
@@ -22,8 +24,6 @@ input {
 // back to each monitor's EDID-preferred mode, quietly losing the high
 // refresh rate. Both panels here advertise a low-Hz preferred mode
 // (DP-3 60Hz, DP-2 120Hz), so pinning the top mode is essential.
-// scale is pinned to 1.0 so logical size == pixel size and the x-offset
-// below (2560) stays correct.
 output "DP-3" {
     // Dell S2725DC — left. Preferred is 60Hz; panel does 143.973.
     mode "2560x1440@143.973"
