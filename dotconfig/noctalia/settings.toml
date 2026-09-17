@@ -185,26 +185,24 @@ custom_palette = "Coral and Sea"
 source = "custom"
 
 [wallpaper.default]
-path = "/home/me1sgr/Pictures/Wallpapers/6quksxf6b7u51.jpg"
+path = "/home/mcgi5sr2/Pictures/Wallpapers/0R9GUWV.jpg"
 
 [wallpaper.last]
-path = "/home/me1sgr/Pictures/Wallpapers/6quksxf6b7u51.jpg"
+path = "/home/mcgi5sr2/Pictures/Wallpapers/0R9GUWV.jpg"
 
-[wallpaper.monitors.DP-1]
-path = "/home/me1sgr/Pictures/Wallpapers/6quksxf6b7u51.jpg"
+[wallpaper.monitors.DP-3]
+path = "/home/mcgi5sr2/Pictures/Wallpapers/0R9GUWV.jpg"
 
-[wallpaper.monitors.HDMI-A-1]
-path = "/home/me1sgr/Pictures/Wallpapers/6quksxf6b7u51.jpg"
+[wallpaper.monitors.DP-2]
+path = "/home/mcgi5sr2/Pictures/Wallpapers/0R9GUWV.jpg"
 
-[wallpaper.monitors.eDP-1]
-path = "/home/me1sgr/Pictures/Wallpapers/6quksxf6b7u51.jpg"
 
 [widget.scale]
 glyph = "aspect-ratio"
 type = "custom_button"
 
     [widget.scale.actions]
-    left = "exec /home/me1sgr/.config/niri/scripts/scale-switcher.sh"
+    left = "exec /home/mcgi5sr2/.config/niri/scripts/scale-switcher.sh"
 [shell]
 app_icon_colorize = true
 avatar_path = ""
