@@ -79,7 +79,7 @@ DIRSTACKSIZE=60
 
 # Autoload zsh functions.
 fpath=(~/.zsh/functions $fpath)
-autoload -U ~/.zsh/functions/*(:t)
+autoload -U ~/.zsh/functions/*(N:t)
 
 fignore=(\~)
 
