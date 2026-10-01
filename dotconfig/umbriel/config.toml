@@ -23,7 +23,17 @@
 # ────────────────────────────────────────────────────────────────────────────
 
 [include]
-files = []                                      # Example: ["appearance.toml", "outputs.toml"]
+# Bundled effect presets. Including a file only makes the preset available;
+# the selectors in [effects] and [animation.*] are what turn each one on.
+# Unreferenced presets cost nothing, so all six are included for easy toggling.
+files = [
+  "/usr/share/umbriel/effects/border/pulse/effect.toml",       # focused-window glowing border (ON)
+  "/usr/share/umbriel/effects/animation/reveal/effect.toml",   # window open/close wipe (ON)
+  "/usr/share/umbriel/effects/animation/squash/effect.toml",   # window move/resize squash (ON)
+  "/usr/share/umbriel/effects/cursor/glow/effect.toml",        # pointer halo (available; off)
+  "/usr/share/umbriel/effects/window/scanlines/effect.toml",   # CRT scanlines (available; off)
+  "/usr/share/umbriel/effects/screen/vignette/effect.toml",    # screen-edge vignette (available; off)
+]
 
 [include.optional]
 files = []                                      # Example: ["~/.config/umbriel/noctalia.toml"]
@@ -694,6 +704,57 @@ blur_optimized = false
 # Copy examples/shaders beside your config only if you want editable local versions.
 # ────────────────────────────────────────────────────────────────────────────
 
+# ───────────────────────────────── Effects ──────────────────────────────────
+# GLSL effect presets (defined via the [include] files above). Each selector
+# names a preset or pool; "" selects nothing, "off" is reserved for overrides.
+[effects]
+border = "aurora"                                # Custom palette-gradient border on every focused window
+                                                 # (swap to "borders" for the random pulse/aurora pool, or "pulse")
+window = ""                                      # Per-window shader for ALL windows; "scanlines" = global CRT (busy)
+screen = ""                                      # Whole-output shader; "vignette" darkens edges + disables direct scanout
+cursor = "cursor_aurora"                         # Aurora palette halo around the pointer ("glow" = bundled single-colour)
+max_fps = 0                                      # Cap for effect-only frames, 0-240; 0 follows each output's refresh
+in_capture = false                              # Include window/screen/cursor effects in screenshots & recordings
+
+# Border pool: resolved once per window before its first frame, so each window
+# keeps a stable border for its lifetime. "random" = independent coin-flip per
+# window; use "round_robin" to alternate, or "unused_first" to spread evenly.
+[effects.pool.borders]
+kind = "border"
+choose = ["pulse", "aurora"]
+selection = "random"
+
+# Custom "aurora" border — palette gradient flowing around the ring.
+# shader path is relative to this config file (resolves next to it when synced).
+[effects.preset.aurora]
+kind = "border"
+shader = "shaders/aurora.glsl"
+palette = true                                   # Feed [colors] accents/status to the shader
+padding = 24                                      # Transparent space around the ring for the bloom, 0-1024
+speed = 1.0                                       # Multiplier on umbriel_time, 0-10
+
+[effects.preset.aurora.light]
+spread = 56                                       # How far the bloom spills, 1-256 logical px
+intensity = 1.4                                   # Light gain, 0-4
+threshold = 0.35                                  # Brightness a ring pixel needs before it emits, 0-1
+
+# Custom "cursor_aurora" — palette halo flowing around the pointer.
+[effects.preset.cursor_aurora]
+kind = "cursor"
+shader = "shaders/cursor-aurora.glsl"
+palette = false                                  # Shader uses its own green/teal/violet aurora ramp
+radius = 128                                      # Half-size of the square around the pointer, 0 = whole output
+
+# Custom "genie" — window unfurls from / collapses into a bottom-centre point.
+[effects.preset.genie]
+kind = "animation"
+shader = "shaders/genie.glsl"
+
+# Example: CRT scanlines only on mpv instead of globally — uncomment to use.
+# [[window_rule]]
+# match.app_id = "^mpv$"
+# window_effect = "scanlines"
+
 [animation]
 enabled = true                                  # Master animation switch
 duration_ms = 250                               # Shared duration, 1-10000 ms
@@ -704,17 +765,17 @@ curve = "easeout"                               # Built-in or registered bezier/
 enabled = true
 duration_ms = 150
 curve = "easeout"
-style = "popin"                                 # popin, zoom, slide, fade, or none
+style = "popin"                                 # popin, zoom, slide, fade, or none (fallback if effect fails)
 scale = 0.85                                    # Popin start scale, 0.1-1.0
-# shader = "shaders/reveal.glsl"      # Replaces the built-in opening style
+effect = "genie"                                # Unfurl from a bottom-centre point (custom shader)
 
 # Window closing
 [animation.windows_out]
 enabled = true
 duration_ms = 150
 curve = "easeout"
-style = "fade"                                  # fade or slide
-# shader = "shaders/reveal.glsl"
+style = "fade"                                  # fade or slide (fallback if effect fails)
+effect = "genie"                                # Collapse into a bottom-centre point (custom shader)
 
 # Window movement, resizing, and floating maximize. Visible scratchpad keybind
 # resizing uses this event too.
@@ -722,7 +783,7 @@ style = "fade"                                  # fade or slide
 enabled = true
 duration_ms = 250
 curve = "snappy"
-# shader = "shaders/squash.glsl"      # Subtle compression and settle during move/resize
+effect = "squash"                               # Subtle compression and settle during move/resize
 
 # Workspace switching
 [animation.workspaces]
@@ -758,10 +819,10 @@ curve = "easeout"
 
 # Unfocused window opacity
 [animation.dim_unfocused]
-enabled = false
+enabled = true
 duration_ms = 250
 curve = "easeout"
-dim = 0.0                                       # 0 disables dimming; maximum is 1.0
+dim = 0.35                                      # 0 disables dimming; maximum is 1.0
 
 # Layer-shell surface mapping and unmapping
 [animation.layers]
