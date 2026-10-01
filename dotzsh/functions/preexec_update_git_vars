@@ -1,0 +1,4 @@
+# preexec hook. Git info is refreshed in precmd/chpwd, so there is nothing to
+# do before a command runs. Kept as a real (no-op) function so the wiring in
+# ~/.zshrc (preexec_functions+='preexec_update_git_vars') resolves cleanly.
+:

@@ -1,0 +1,16 @@
+# Recompute the cached git info string into $__GIT_PROMPT_INFO.
+# Called from the precmd/chpwd hooks; prompt_git_info only echoes the result,
+# so the prompt stays cheap even though $(prompt_git_info) runs every render.
+
+typeset -g __GIT_PROMPT_INFO=''
+
+local branch
+branch=$(command git symbolic-ref --short -q HEAD 2>/dev/null) \
+  || branch=$(command git describe --tags --exact-match HEAD 2>/dev/null) \
+  || branch=$(command git rev-parse --short HEAD 2>/dev/null) \
+  || return 0   # not inside a git work tree -> leave info empty
+
+local dirty=''
+[[ -n "$(command git status --porcelain 2>/dev/null)" ]] && dirty=' *'
+
+__GIT_PROMPT_INFO=" (${branch}${dirty})"

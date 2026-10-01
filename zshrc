@@ -79,7 +79,12 @@ DIRSTACKSIZE=60
 
 # Autoload zsh functions.
 fpath=(~/.zsh/functions $fpath)
-autoload -U ~/.zsh/functions/*(N:t)
+# Guard with an anonymous function so an empty/absent dir can't collapse to a
+# bare `autoload`, which would dump every autoloadable function at startup.
+() {
+  local -a fns=(~/.zsh/functions/*(N-.:t))
+  (( $#fns )) && autoload -Uz -- $fns
+}
 
 fignore=(\~)
 

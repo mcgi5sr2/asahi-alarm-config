@@ -1,0 +1,2 @@
+# chpwd hook: refresh git info when the working directory changes.
+update_current_git_vars

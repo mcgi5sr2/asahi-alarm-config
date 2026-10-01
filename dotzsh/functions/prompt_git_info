@@ -1,0 +1,3 @@
+# Echo the cached git info computed by update_current_git_vars.
+# Used from $PROMPT in ~/.zshrc (requires the prompt_subst option).
+print -rn -- "$__GIT_PROMPT_INFO"
