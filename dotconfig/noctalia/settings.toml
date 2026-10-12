@@ -161,3 +161,10 @@ type = "volume"
 focused_color = "primary"
 occupied_color = "secondary"
 type = "workspaces"
+# Power off after 15 min idle on battery (the lid switch is ignored, so a closed
+# laptop otherwise drains flat). On AC it waits until unplugged for 15 min.
+[idle.behavior.poweroff-on-battery]
+timeout = 900
+action = "command"
+command = "/home/mcgi5sr2/.local/bin/idle-poweroff-on-battery"
+resume_command = "pkill -f idle-poweroff-on-battery"

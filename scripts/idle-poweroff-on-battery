@@ -1,0 +1,35 @@
+#!/bin/sh
+# Power off an idle laptop that is running on battery.
+#
+# Run by noctalia's idle service (the [idle.behavior.poweroff-on-battery]
+# behavior, 15 min timeout); its resume_command kills this script when the
+# user comes back. On battery it powers off straight away. On AC it waits, and
+# powers off once the laptop has been unplugged for BATTERY_GRACE seconds, so
+# closing the lid, unplugging and walking away still shuts it down.
+#
+# The lid switch is ignored in /etc/systemd/logind.conf.d/lid.conf, so without
+# this a closed laptop stays on until the battery is flat.
+
+AC=/sys/class/power_supply/macsmc-ac/online
+BATTERY_GRACE=${BATTERY_GRACE:-900}
+POLL=30
+
+on_battery() { [ "$(cat "$AC" 2>/dev/null)" = 0 ]; }
+
+if on_battery; then
+    logger -t idle-poweroff "idle on battery, powering off"
+    exec systemctl poweroff
+fi
+
+unplugged=0
+while sleep "$POLL"; do
+    if on_battery; then
+        unplugged=$((unplugged + POLL))
+        if [ "$unplugged" -ge "$BATTERY_GRACE" ]; then
+            logger -t idle-poweroff "idle and unplugged for ${unplugged}s, powering off"
+            exec systemctl poweroff
+        fi
+    else
+        unplugged=0
+    fi
+done
