@@ -294,34 +294,60 @@ follows_mouse = false                           # Focus the pointer target after
 # ────────────────────────────────────────────────────────────────────────────
 
 [keybinds]
+# FULL UMBRIEL layout. The base below mirrors the shipped reference config
+# (/usr/share/umbriel/config.toml) so muscle memory carries across every umbriel
+# machine. A [keybinds] table REPLACES the built-in set, so every active chord is
+# listed here. Deliberate local deviations from the shipped set:
+#   * Mod+L stays screen-lock (shipped uses it for window-focus-right), so vim
+#     focus is H/J/K only — our long-standing habit.
+#   * Noctalia control-center moves to Mod+Shift+C; shipped Mod+O = overview is
+#     adopted.
+# The "LOCAL EXTRAS" block only uses chords the shipped set never binds, so it
+# never shadows anything portable. Pure duplicates of shipped actions (e.g. an
+# alias chord for floating or move) were dropped on purpose to keep the layout
+# convergent with other umbriel systems.
+# Syntax: https://docs.noctalia.dev/umbriel/keybinds/
+# Actions: https://docs.noctalia.dev/umbriel/actions/
 
-# Applications and session
-"Mod+Return" = "spawn:kitty"
-"Mod" = "spawn:noctalia msg panel-toggle launcher"
-"Mod+Q" = "window-close"
+# ─── Applications and session (shipped) ───
+"Mod+Return" = { action = "spawn:kitty", repeat = false }
+"Mod" = "spawn:noctalia msg panel-toggle launcher"    # tap Super = launcher
+"Mod+Q" = { action = "window-close", repeat = false }
+"Mod+Escape" = "session-quit"                          # NOTE: quits the session
+"Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
 
-# Focus navigation. In overview, Mod+Up/Down retain normal layout focus, so they
-# traverse stacks in the default horizontal layout. Bare Up/Down move between
-# workspace rows.
+# ─── Focus and movement (shipped) ───
 "Mod+Left" = "window-focus-left"
 "Mod+Down" = "window-focus-down"
 "Mod+Up" = "window-focus-up"
 "Mod+Right" = "window-focus-right"
+"Mod+H" = "window-focus-left"
+"Mod+J" = "window-focus-down"
+"Mod+K" = "window-focus-up"
+# LOCAL: shipped binds Mod+L to window-focus-right; we keep Mod+L as screen-lock
+# (see session extras), so there is no Mod+L focus key on purpose.
+"Mod+F1" = "window-focus-next"
+"Mod+Shift+Left" = "column-move-left"
+"Mod+Shift+Down" = "window-move-down"
+"Mod+Shift+Up" = "window-move-up"
+"Mod+Shift+Right" = "column-move-right"
 
-# Window state and layout
-"Mod+T" = "window-toggle-floating"
-"Mod+Shift+T" = "window-focus-switch-floating"
-"Mod+P" = "window-toggle-pinned"
-"Mod+M" = "window-toggle-maximize-to-edges"
-"Mod+F" = "window-toggle-fullscreen"
-
-# Overview
+# ─── Window state and layout (shipped) ───
+"Mod+T" = { action = "window-toggle-floating", repeat = false }
+"Mod+Shift+T" = { action = "window-focus-switch-floating", repeat = false }
+"Mod+P" = { action = "window-toggle-pinned", repeat = false }
+"Mod+M" = { action = "window-toggle-maximize-to-edges", repeat = false }
+"Mod+F" = { action = "window-toggle-fullscreen", repeat = false }
+"Mod+Ctrl+F" = { action = "window-toggle-maximize", repeat = false }
+"Mod+R" = "window-cycle-primary-extent"
+"Mod+Shift+R" = "window-cycle-primary-extent-back"
+"Mod+Comma" = "window-consume-left"
+"Mod+Period" = "window-consume-right"
+"Mod+WheelUp" = "window-focus-left"
+"Mod+WheelDown" = "window-focus-right"
 "Mod+O" = { action = "overview-toggle", repeat = false }
 
-# Cheatsheet
-"Mod+Slash" = "cheatsheet-toggle"
-
-# Workspaces: Mod+<n> switches, Mod+Shift+<n> moves the focused window there.
+# ─── Workspaces (shipped) ───
 "Mod+1" = "workspace-switch:1"
 "Mod+2" = "workspace-switch:2"
 "Mod+3" = "workspace-switch:3"
@@ -331,7 +357,6 @@ follows_mouse = false                           # Focus the pointer target after
 "Mod+7" = "workspace-switch:7"
 "Mod+8" = "workspace-switch:8"
 "Mod+9" = "workspace-switch:9"
-"Mod+0" = "workspace-switch:10"
 "Mod+Shift+1" = "window-move-to-workspace:1"
 "Mod+Shift+2" = "window-move-to-workspace:2"
 "Mod+Shift+3" = "window-move-to-workspace:3"
@@ -341,139 +366,89 @@ follows_mouse = false                           # Focus the pointer target after
 "Mod+Shift+7" = "window-move-to-workspace:7"
 "Mod+Shift+8" = "window-move-to-workspace:8"
 "Mod+Shift+9" = "window-move-to-workspace:9"
-"Mod+Shift+0" = "window-move-to-workspace:10"
 
-# Multi-monitor: Mod+Ctrl+arrow focuses the next screen; add Shift to send the window.
-"Mod+Ctrl+Left" = "output-focus-left"
-"Mod+Ctrl+Right" = "output-focus-right"
-"Mod+Ctrl+Up" = "output-focus-up"
-"Mod+Ctrl+Down" = "output-focus-down"
-"Mod+Ctrl+Shift+Left" = "window-move-to-output-left"
-"Mod+Ctrl+Shift+Right" = "window-move-to-output-right"
-"Mod+Ctrl+Shift+Up" = "window-move-to-output-up"
-"Mod+Ctrl+Shift+Down" = "window-move-to-output-down"
-
-# Session and screenshot
-"Mod+L" = "spawn:noctalia msg session lock"
-"Mod+S" = "spawn:noctalia msg screenshot-region"
-
-# Reorder the focused window within the current workspace
-"Mod+Shift+Left" = "column-move-left"
-"Mod+Shift+Right" = "column-move-right"
-"Mod+Shift+Up" = "window-move-up"
-"Mod+Shift+Down" = "window-move-down"
-
-# Cycle workspaces on the focused output
-"Mod+Page_Up" = "workspace-previous"
-"Mod+Page_Down" = "workspace-next"
-
-# Media and brightness (laptop Fn keys). Volume/brightness use noctalia so the
-# on-screen OSD shows; allow_when_locked lets them work on the lock screen.
-# Documentation: https://docs.noctalia.dev/umbriel/keybinds/#example-media-and-brightness-keys
-"XF86AudioRaiseVolume" = { action = "spawn:noctalia msg volume-up 5", allow_when_locked = true }
-"XF86AudioLowerVolume" = { action = "spawn:noctalia msg volume-down 5", allow_when_locked = true }
-"XF86AudioMute" = { action = "spawn:noctalia msg volume-mute", allow_when_locked = true }
-"XF86AudioMicMute" = { action = "spawn:noctalia msg mic-mute", allow_when_locked = true }
-"XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up", allow_when_locked = true }
-"XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down", allow_when_locked = true }
-"XF86AudioPlay" = "spawn:playerctl play-pause"
-"XF86AudioNext" = "spawn:playerctl next"
-"XF86AudioPrev" = "spawn:playerctl previous"
-
-# These useful bindings are built in already. They stay commented here so an
-# included keybind file can override them without this main file winning again.
-# Uncomment a chord only when this file should own that override.
-
-# "Mod+Escape" = "session-quit"
-# "Mod+F1" = "window-focus-next"
-# "Mod+H" = "window-focus-left"
-# "Mod+J" = "window-focus-down"
-# "Mod+K" = "window-focus-up"
-# "Mod+L" = "window-focus-right"
-# "Mod+Shift+Left" = "column-move-left"
-# "Mod+Shift+Down" = "window-move-down"
-# "Mod+Shift+Up" = "window-move-up"
-# "Mod+Shift+Right" = "column-move-right"
-# "Mod+F" = "window-toggle-fullscreen"
-# "Mod+Ctrl+F" = "window-toggle-maximize"
-# "Mod+R" = "window-cycle-width"
-# "Mod+Shift+R" = "window-cycle-width-back"
-# "Mod+Comma" = "window-consume-left"
-# "Mod+Period" = "window-consume-right"
-# "Mod+WheelUp" = "window-focus-left"
-# "Mod+WheelDown" = "window-focus-right"
-# Mod+1 through Mod+9 switch workspaces. Adding Shift moves the focused window;
-# keypad digits provide the same built-in actions.
-
-# Scratchpads
-# Each output owns a separate scratchpad. Bare actions target the output under
-# the pointer; append `:DP-1` or a monitor Config name to target one explicitly.
-# Documentation: https://docs.noctalia.dev/umbriel/scratchpads/
-"Mod+Shift+Space" = "window-move-to-scratchpad"
+# ─── Scratchpad (shipped) ───
+"Mod+Shift+Space" = { action = "window-move-to-scratchpad", repeat = false }
 "Mod+Space" = "scratchpad-toggle"
-"Mod+Ctrl+Space" = "window-restore-from-scratchpad"
+"Mod+Ctrl+Space" = { action = "window-restore-from-scratchpad", repeat = false }
 "Mod+Tab" = "scratchpad-focus-next"
 
-# Optional navigation and sizing recipes. These chords do not replace active
-# bindings above when uncommented.
-# "Mod+Page_Up" = "workspace-previous"
-# "Mod+Page_Down" = "workspace-next"
-# "Mod+Shift+Page_Up" = "window-move-to-workspace-previous"
-# "Mod+Shift+Page_Down" = "window-move-to-workspace-next"
-# "Mod+Home" = "column-focus-first"
-# "Mod+End" = "column-focus-last"
-# "Mod+Shift+Home" = "column-move-to-first"
-# "Mod+Shift+End" = "column-move-to-last"
-# "Mod+Bracketright" = "window-focus-next"
-# "Mod+Bracketleft" = "window-focus-previous"
-# "Mod+Shift+Bracketright" = "window-swap-next"
-# "Mod+Shift+Bracketleft" = "window-swap-previous"
-# "Mod+Minus" = "window-modify-width:-0.1"
-# "Mod+Equal" = "window-modify-width:0.1"
-# "Mod+Alt+Minus" = "window-modify-height:-0.1"
-# "Mod+Alt+Equal" = "window-modify-height:0.1"
-# "Mod+Alt+R" = "window-cycle-height"
-# "Mod+Alt+Shift+R" = "window-cycle-height-back"
-# "Mod+Grave" = "window-focus-last"
-# "Mod+BackSpace" = "window-consume-or-expel-left"
-# "Mod+C" = "column-center"
-# "Mod+Shift+C" = "window-center"
-# "Mod+Ctrl+T" = "workspace-set-layout:toggle"
-# "Mod+MouseMiddle" = "layout-scroll-drag"
-# "Mod+Alt+K" = "keyboard-layout-next"
-# "Mod+WheelUp" = { action = "workspace-previous", cooldown_ms = 150 }
-# "Mod+WheelDown" = { action = "workspace-next", cooldown_ms = 150 }
+# ═══════════════════ LOCAL EXTRAS (chords the shipped set leaves free) ═══════════════════
 
-# Submaps temporarily replace the active keybind layer and can nest. Entry
-# binds must not repeat. A table-form bind can run an action and then reset one
-# level, while a global reset provides an emergency exit from any layer.
-# Submaps: https://docs.noctalia.dev/umbriel/keybinds/#submaps
-# "Mod+S" = { action = "submap:resize", repeat = false }
-# "submap[resize],1" = { action = "window-set-width:0.5", submap = "reset" }
-# "submap[resize],N" = { action = "submap:nudge", repeat = false }
-# "submap[resize],Escape" = "submap:reset"
-# "submap[nudge],Left" = "window-modify-width:-0.1"
-# "submap[nudge],Right" = "window-modify-width:0.1"
-# "submap[nudge],Escape" = "submap:reset"
-# "Escape" = "submap:reset"
+# ─── Session / shell panels (Noctalia) ───
+"Mod+L" = "spawn:noctalia msg session lock"           # LOCAL: overrides shipped focus-right
+"Mod+Shift+M" = "spawn:noctalia msg session logout"
+"Mod+Shift+C" = "spawn:noctalia msg panel-open control-center"   # relocated from Mod+O
+"Mod+Shift+O" = "spawn:noctalia msg settings-toggle"
+"Mod+Shift+P" = "dpms-off"
+"Ctrl+Alt+Delete" = "session-quit"
 
-# Media and brightness
-# Documentation: https://docs.noctalia.dev/umbriel/keybinds/#example-media-and-brightness-keys
-# "XF86AudioRaiseVolume" = "spawn:wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-# "XF86AudioLowerVolume" = "spawn:wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-# "XF86AudioMute" = "spawn:wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-# "XF86AudioPlay" = "spawn:playerctl play-pause"
-# "XF86AudioNext" = "spawn:playerctl next"
-# "XF86AudioPrev" = "spawn:playerctl previous"
-# Binds intended to work while locked use the table form.
-# "XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down 10", allow_when_locked = true }
-# "XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up 10", allow_when_locked = true }
+# ─── Application launchers ───
+"Mod+E" = "spawn:dolphin"
+
+# ─── Screenshots (Noctalia tooling) ───
+"Mod+S" = "spawn:noctalia msg screenshot-region"
+"Mod+Shift+S" = "spawn:noctalia msg screenshot-fullscreen"
+"Print" = "spawn:noctalia msg screenshot-fullscreen"
+"Alt+Print" = "spawn:noctalia msg screenshot-region"
+
+# ─── Volume / mic (Noctalia OSD, usable while locked) ───
+"XF86AudioRaiseVolume" = { action = "spawn:noctalia msg volume-up", allow_when_locked = true }
+"XF86AudioLowerVolume" = { action = "spawn:noctalia msg volume-down", allow_when_locked = true }
+"XF86AudioMute" = { action = "spawn:noctalia msg volume-mute", allow_when_locked = true }
+"XF86AudioMicMute" = { action = "spawn:noctalia msg mic-mute", allow_when_locked = true }
+
+# ─── Playback ───
+"XF86AudioPlay" = { action = "spawn:playerctl play-pause", allow_when_locked = true }
+"XF86AudioNext" = { action = "spawn:playerctl next", allow_when_locked = true }
+"XF86AudioPrev" = { action = "spawn:playerctl previous", allow_when_locked = true }
+
+# ─── Brightness (Noctalia OSD, usable while locked) ───
+"XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up", allow_when_locked = true }
+"XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down", allow_when_locked = true }
+
+# ─── Extra navigation carried over from niri (chords shipped leaves free) ───
+# These add capability the shipped set lacks, so they are not duplicates.
+"Mod+Home" = "column-focus-first"
+"Mod+End" = "column-focus-last"
+"Mod+Page_Down" = "workspace-next"                    # shipped has no next/prev cycle
+"Mod+Page_Up" = "workspace-previous"
+"Mod+U" = "workspace-next"
+"Mod+I" = "workspace-previous"
+"Mod+Alt+Left" = "output-focus-left"                  # focus other monitor (shipped has none)
+"Mod+Alt+Down" = "output-focus-down"
+"Mod+Alt+Up" = "output-focus-up"
+"Mod+Alt+Right" = "output-focus-right"
+"Mod+Ctrl+Shift+Left" = "window-move-to-output-left"  # shipped has no move-to-output
+"Mod+Ctrl+Shift+Down" = "window-move-to-output-down"
+"Mod+Ctrl+Shift+Up" = "window-move-to-output-up"
+"Mod+Ctrl+Shift+Right" = "window-move-to-output-right"
+"Mod+Ctrl+1" = "column-move-to-workspace:1"           # move whole column (vs shipped window-move)
+"Mod+Ctrl+2" = "column-move-to-workspace:2"
+"Mod+Ctrl+3" = "column-move-to-workspace:3"
+"Mod+Ctrl+4" = "column-move-to-workspace:4"
+"Mod+Ctrl+5" = "column-move-to-workspace:5"
+"Mod+Ctrl+6" = "column-move-to-workspace:6"
+"Mod+Ctrl+7" = "column-move-to-workspace:7"
+"Mod+Ctrl+8" = "column-move-to-workspace:8"
+"Mod+Ctrl+9" = "column-move-to-workspace:9"
+"Mod+BracketLeft" = "window-consume-or-expel-left"    # vs shipped consume-only
+"Mod+BracketRight" = "window-consume-or-expel-right"
+"Mod+Minus" = "window-modify-primary-extent:-0.1"     # fine nudge vs shipped cycle
+"Mod+Equal" = "window-modify-primary-extent:0.1"
+"Mod+C" = "column-center"
+"Mod+Backslash" = "workspace-set-layout:toggle"       # scrolling <-> dwindle <-> master
 
 # ─────────────────────────────── Layout ─────────────────────────────────────
 # Configure the default tiling mode and shared sizing behavior. Workspace rules
 # above can override these values for individual workspaces.
 # Documentation: https://docs.noctalia.dev/umbriel/layout/
 # ────────────────────────────────────────────────────────────────────────────
+
+# LOCAL (Asahi): kept from the previous laptop binds.
+"Mod+Slash" = "cheatsheet-toggle"
+"Mod+0" = "workspace-switch:10"
+"Mod+Shift+0" = "window-move-to-workspace:10"
 
 [layout]
 mode = "scrolling"                              # scrolling, dwindle, or master

@@ -79,7 +79,12 @@ DIRSTACKSIZE=60
 
 # Autoload zsh functions.
 fpath=(~/.zsh/functions $fpath)
-autoload -U ~/.zsh/functions/*(:t)
+# Guard with an anonymous function so an empty/absent dir can't collapse to a
+# bare `autoload`, which would dump every autoloadable function at startup.
+() {
+  local -a fns=(~/.zsh/functions/*(N-.:t))
+  (( $#fns )) && autoload -Uz -- $fns
+}
 
 fignore=(\~)
 
@@ -201,3 +206,23 @@ export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
 export PATH="$HOME/.cargo/bin:$PATH"
 fastfetch
 
+export PATH="$HOME/.local/bin:$PATH"
+
+# Run claude under a cgroup memory cap. It was OOM-killed twice (11.9G on
+# 2026-08-02, 14.1G on 2026-08-04) on a 15G swapless box, which took the whole
+# tmux pane with it. The cap confines the kill to claude instead of letting it
+# starve the session. Unset CLAUDE_MEMORY_MAX to bypass.
+claude() {
+  local high="${CLAUDE_MEMORY_HIGH:-6G}" max="${CLAUDE_MEMORY_MAX:-8G}"
+  if [[ -z "$max" ]] || ! command -v systemd-run >/dev/null 2>&1; then
+    command claude "$@"
+    return
+  fi
+  # OOMPolicy=continue is load-bearing: scopes default to 'stop', so systemd would
+  # tear down the whole scope (killing the session) when a runaway child matcher is
+  # OOM-killed. That is exactly how the pane died — see claude-code issue #54394.
+  systemd-run --user --scope --quiet --collect \
+    -p "MemoryHigh=$high" -p "MemoryMax=$max" -p MemorySwapMax=0 \
+    -p OOMPolicy=continue \
+    -- "$(whence -p claude)" "$@"
+}
