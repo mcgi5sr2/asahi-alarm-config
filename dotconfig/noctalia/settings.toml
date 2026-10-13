@@ -205,7 +205,6 @@ font_family = "sans-serif"
 input_borders = true
 launch_apps_as_systemd_services = false
 launch_apps_custom_command = ""
-niri_overview_type_to_launch_enabled = false
 offline_mode = false
 password_style = "default"
 polkit_agent = true
