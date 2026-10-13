@@ -1,0 +1,59 @@
+#!/bin/sh
+# Noctalia bar button: connect/disconnect the University of Sheffield VPN.
+# The university password lives in the login keyring (asked for once with kdialog);
+# pkexec asks for the admin password to start the root openfortivpn process.
+# Disconnecting just drops a flag file that the root helper's watcher acts on.
+# Forget the stored password: secret-tool clear service shef-vpn user <username>
+ctl=/usr/local/sbin/shef-vpn-ctl
+# University username: from the openfortivpn config, else the login name.
+user=$(sed -n 's/^[[:space:]]*username[[:space:]]*=[[:space:]]*//p' "$HOME/.config/openfortivpn/shef.conf" 2>/dev/null)
+user=${user:-$(id -un)}
+flag=/run/user/$(id -u)/shef-vpn-stop
+nid=0
+# Each toast replaces the previous one, so the MFA reminder turns into the result.
+note() { nid=$(notify-send -p -r "$nid" -a "Sheffield VPN" -i network-vpn "$@" "Sheffield VPN" "$msg"); }
+say() { msg=$1; note; }
+
+if pgrep -x openfortivpn >/dev/null; then
+  if pgrep -f "^/bin/sh $ctl run" >/dev/null; then
+    touch "$flag"
+    i=0
+    while pgrep -x openfortivpn >/dev/null && [ $i -lt 16 ]; do sleep 0.5; i=$((i + 1)); done
+    rm -f "$flag"
+  else
+    # Started from the terminal (shef-vpn): no watcher, so stopping needs root.
+    pkexec "$ctl" down
+    sleep 1
+  fi
+  pgrep -x openfortivpn >/dev/null || say "Disconnected"
+  exit 0
+fi
+
+rm -f "$flag"
+pw=$(secret-tool lookup service shef-vpn user "$user")
+if [ -z "$pw" ]; then
+  pw=$(kdialog --title "Sheffield VPN" --password "University password for $user (saved to your keyring)") || exit 0
+  printf '%s' "$pw" | secret-tool store --label "Sheffield VPN ($user)" service shef-vpn user "$user"
+fi
+printf '%s\n' "$pw" | pkexec "$ctl" up || exit 1
+pw=
+msg="Connecting... approve the MFA prompt on your phone"
+note -t 0 -u critical
+
+# Wait for the tunnel (the root watcher gives up on a rejected login or after 2 min).
+i=0
+while [ $i -lt 125 ]; do
+  if ip -4 addr show dev ppp0 2>/dev/null | grep -q inet; then
+    say "Connected"
+    exit 0
+  fi
+  pgrep -x openfortivpn >/dev/null || break
+  sleep 1
+  i=$((i + 1))
+done
+if journalctl -q --no-pager -t shef-vpn --since -3min | grep -q "login rejected"; then
+  say "Login rejected. Clear the saved password with: secret-tool clear service shef-vpn user $user"
+else
+  say "Connection failed. Logs: journalctl -t openfortivpn -n 20"
+fi
+exit 1

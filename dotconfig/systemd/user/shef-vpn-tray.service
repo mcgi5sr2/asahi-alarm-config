@@ -1,0 +1,11 @@
+[Unit]
+Description=Sheffield VPN tray icon
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+ExecStart=%h/.local/bin/shef-vpn-tray
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target

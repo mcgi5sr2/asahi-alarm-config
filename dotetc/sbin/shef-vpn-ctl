@@ -1,0 +1,64 @@
+#!/bin/sh
+# Root helper for the Sheffield VPN bar button (scripts/shef-vpn-toggle), run via
+# pkexec. "up" reads the VPN password on stdin and starts openfortivpn detached
+# (logs: journalctl -t openfortivpn) together with a watcher that stops it when
+# the invoking user creates /run/user/<uid>/shef-vpn-stop, so disconnecting needs
+# no root prompt. The watcher only tests that the flag exists. Nothing is stored.
+set -eu
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+
+# openfortivpn ignores SIGINT between persistent retries, so TERM, then KILL.
+stop() {
+  kill -TERM "$@" 2>/dev/null || return 0
+  i=0
+  while kill -0 "$@" 2>/dev/null && [ $i -lt 5 ]; do sleep 1; i=$((i + 1)); done
+  kill -KILL "$@" 2>/dev/null || true
+}
+
+case "${1:-}" in
+  up)
+    pgrep -x openfortivpn >/dev/null && exit 0
+    uid=${PKEXEC_UID:?run via pkexec}
+    setsid -f "$0" run "/run/user/$uid/shef-vpn-stop" >/dev/null 2>&1
+    ;;
+  run)
+    # Pass the password on stdin through fd 3: a background job's own stdin is
+    # replaced with /dev/null, even with <&0.
+    flag=$2
+    exec 3<&0
+    /usr/bin/openfortivpn -c /etc/openfortivpn/shef.conf --use-syslog <&3 3<&- &
+    pid=$!
+    exec 3<&- </dev/null
+    # Until the first tunnel comes up, stop on a rejected login (persistent = 10
+    # would otherwise retry a wrong password every 10 s against the account) or
+    # after 2 min. The gateway can sit for a while after "Connected to gateway".
+    up=0 t=0
+    while kill -0 "$pid" 2>/dev/null; do
+      [ -e "$flag" ] && { stop "$pid"; break; }
+      if [ $up = 0 ]; then
+        if ip -4 addr show dev ppp0 2>/dev/null | grep -q inet; then
+          up=1
+        elif journalctl -q --no-pager -t openfortivpn _PID="$pid" | grep -q "Could not authenticate"; then
+          logger -t shef-vpn "login rejected, stopping"
+          stop "$pid"
+          break
+        elif [ $t -ge 120 ]; then
+          logger -t shef-vpn "no tunnel after 2 min, stopping"
+          stop "$pid"
+          break
+        fi
+      fi
+      sleep 1
+      t=$((t + 1))
+    done
+    wait "$pid" || true
+    ;;
+  down)
+    pids=$(pgrep -x openfortivpn) || exit 0
+    stop $pids
+    ;;
+  *)
+    echo "usage: shef-vpn-ctl up|down" >&2
+    exit 2
+    ;;
+esac

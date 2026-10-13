@@ -1,0 +1,289 @@
+#!/usr/bin/python3
+"""Tray icon for the University of Sheffield VPN (StatusNotifierItem + dbusmenu).
+
+Shows connected / connecting / disconnected from the real tunnel state
+(openfortivpn running, ppp0 present), so persistent reconnects after a Wi-Fi
+drop show as "connecting" too. Left click runs shef-vpn-toggle, which handles
+the keyring password, admin prompt, MFA toast and no-prompt disconnect.
+Runs as the user service shef-vpn-tray.service.
+"""
+
+import os
+import subprocess
+
+import gi
+
+gi.require_version("GdkPixbuf", "2.0")
+from gi.repository import GdkPixbuf, Gio, GLib
+
+TOGGLE = os.path.expanduser("~/.local/bin/shef-vpn-toggle")
+ICON_DIR = os.path.expanduser("~/.local/share/icons")
+VPN_CONF = os.path.expanduser("~/.config/openfortivpn/shef.conf")
+ITEM_PATH = "/StatusNotifierItem"
+MENU_PATH = "/MenuBar"
+
+STATES = {
+    "connected": ("shef-vpn-connected", "Connected"),
+    "connecting": ("shef-vpn-connecting", "Connecting (approve MFA if asked)"),
+    "disconnected": ("shef-vpn-disconnected", "Disconnected"),
+}
+
+ITEM_XML = """
+<node>
+  <interface name="org.kde.StatusNotifierItem">
+    <property name="Category" type="s" access="read"/>
+    <property name="Id" type="s" access="read"/>
+    <property name="Title" type="s" access="read"/>
+    <property name="Status" type="s" access="read"/>
+    <property name="IconName" type="s" access="read"/>
+    <property name="IconThemePath" type="s" access="read"/>
+    <property name="IconPixmap" type="a(iiay)" access="read"/>
+    <property name="ToolTip" type="(sa(iiay)ss)" access="read"/>
+    <property name="ItemIsMenu" type="b" access="read"/>
+    <property name="Menu" type="o" access="read"/>
+    <method name="Activate"><arg type="i" direction="in"/><arg type="i" direction="in"/></method>
+    <method name="SecondaryActivate"><arg type="i" direction="in"/><arg type="i" direction="in"/></method>
+    <method name="ContextMenu"><arg type="i" direction="in"/><arg type="i" direction="in"/></method>
+    <method name="Scroll"><arg type="i" direction="in"/><arg type="s" direction="in"/></method>
+    <signal name="NewIcon"/>
+    <signal name="NewToolTip"/>
+    <signal name="NewTitle"/>
+    <signal name="NewStatus"><arg type="s"/></signal>
+  </interface>
+</node>
+"""
+
+MENU_XML = """
+<node>
+  <interface name="com.canonical.dbusmenu">
+    <property name="Version" type="u" access="read"/>
+    <property name="TextDirection" type="s" access="read"/>
+    <property name="Status" type="s" access="read"/>
+    <property name="IconThemePath" type="as" access="read"/>
+    <method name="GetLayout">
+      <arg type="i" direction="in"/><arg type="i" direction="in"/><arg type="as" direction="in"/>
+      <arg type="u" direction="out"/><arg type="(ia{sv}av)" direction="out"/>
+    </method>
+    <method name="GetGroupProperties">
+      <arg type="ai" direction="in"/><arg type="as" direction="in"/>
+      <arg type="a(ia{sv})" direction="out"/>
+    </method>
+    <method name="GetProperty">
+      <arg type="i" direction="in"/><arg type="s" direction="in"/><arg type="v" direction="out"/>
+    </method>
+    <method name="Event">
+      <arg type="i" direction="in"/><arg type="s" direction="in"/><arg type="v" direction="in"/><arg type="u" direction="in"/>
+    </method>
+    <method name="EventGroup">
+      <arg type="a(isvu)" direction="in"/><arg type="ai" direction="out"/>
+    </method>
+    <method name="AboutToShow"><arg type="i" direction="in"/><arg type="b" direction="out"/></method>
+    <method name="AboutToShowGroup">
+      <arg type="ai" direction="in"/><arg type="ai" direction="out"/><arg type="ai" direction="out"/>
+    </method>
+    <signal name="ItemsPropertiesUpdated"><arg type="a(ia{sv})"/><arg type="a(ias)"/></signal>
+    <signal name="LayoutUpdated"><arg type="u"/><arg type="i"/></signal>
+    <signal name="ItemActivationRequested"><arg type="i"/><arg type="u"/></signal>
+  </interface>
+</node>
+"""
+
+# dbusmenu item ids
+STATUS_ID, TOGGLE_ID, SEP_ID, FORGET_ID = 1, 2, 3, 4
+
+
+def vpn_user():
+    """University username from the openfortivpn config, else the login name."""
+    try:
+        with open(VPN_CONF) as f:
+            for line in f:
+                key, _, value = line.partition("=")
+                if key.strip() == "username" and value.strip():
+                    return value.strip()
+    except OSError:
+        pass
+    return os.environ.get("USER") or os.getlogin()
+
+
+def render_pixmaps(name):
+    """SVG -> SNI IconPixmap entries (ARGB32, network byte order). Sending pixels
+    keeps the icon's own colours; a named icon gets recoloured by the tray."""
+    path = os.path.join(ICON_DIR, "hicolor/scalable/status", name + ".svg")
+    pixmaps = []
+    for size in (22, 32, 48, 64):
+        pb = GdkPixbuf.Pixbuf.new_from_file_at_size(path, size, size).add_alpha(False, 0, 0, 0)
+        w, h, stride = pb.get_width(), pb.get_height(), pb.get_rowstride()
+        rgba = pb.get_pixels()
+        argb = bytearray()
+        for y in range(h):
+            row = rgba[y * stride: y * stride + w * 4]
+            for x in range(0, w * 4, 4):
+                r, g, b, a = row[x: x + 4]
+                argb += bytes((a, r, g, b))
+        pixmaps.append((w, h, bytes(argb)))
+    return pixmaps
+
+
+def vpn_running():
+    for pid in os.listdir("/proc"):
+        if pid.isdigit():
+            try:
+                with open(f"/proc/{pid}/comm") as f:
+                    if f.read().strip() == "openfortivpn":
+                        return True
+            except OSError:
+                pass
+    return False
+
+
+class Tray:
+    def __init__(self):
+        self.bus = Gio.bus_get_sync(Gio.BusType.SESSION)
+        self.name = f"org.kde.StatusNotifierItem-{os.getpid()}-1"
+        self.state = None
+        self.revision = 1
+        self.toggle_proc = None
+        self.pending_connect = False
+        self.pixmaps = {state: render_pixmaps(icon) for state, (icon, _) in STATES.items()}
+
+        item_info = Gio.DBusNodeInfo.new_for_xml(ITEM_XML).interfaces[0]
+        menu_info = Gio.DBusNodeInfo.new_for_xml(MENU_XML).interfaces[0]
+        self.bus.register_object_with_closures2(ITEM_PATH, item_info, self.item_call, self.item_prop, None)
+        self.bus.register_object_with_closures2(MENU_PATH, menu_info, self.menu_call, self.menu_prop, None)
+        Gio.bus_own_name_on_connection(self.bus, self.name, Gio.BusNameOwnerFlags.NONE, None, None)
+        # (Re-)register whenever the bar's tray host appears, e.g. after a noctalia restart.
+        Gio.bus_watch_name_on_connection(
+            self.bus, "org.kde.StatusNotifierWatcher", Gio.BusNameWatcherFlags.NONE,
+            self.register, None)
+
+        self.poll()
+        GLib.timeout_add_seconds(1, self.poll)
+
+    def register(self, *_):
+        self.bus.call(
+            "org.kde.StatusNotifierWatcher", "/StatusNotifierWatcher",
+            "org.kde.StatusNotifierWatcher", "RegisterStatusNotifierItem",
+            GLib.Variant("(s)", (self.name,)), None, Gio.DBusCallFlags.NONE, -1, None, None)
+
+    # --- state ---------------------------------------------------------------
+
+    def poll(self):
+        toggling = self.toggle_proc is not None and self.toggle_proc.poll() is None
+        if not toggling:
+            self.pending_connect = False
+        if os.path.exists("/sys/class/net/ppp0"):
+            state = "connected"
+        elif vpn_running() or self.pending_connect:
+            state = "connecting"
+        else:
+            state = "disconnected"
+        if state != self.state:
+            self.state = state
+            self.emit(ITEM_PATH, "org.kde.StatusNotifierItem", "NewIcon")
+            self.emit(ITEM_PATH, "org.kde.StatusNotifierItem", "NewToolTip")
+            self.revision += 1
+            self.emit(MENU_PATH, "com.canonical.dbusmenu", "LayoutUpdated",
+                      GLib.Variant("(ui)", (self.revision, 0)))
+        return True
+
+    def emit(self, path, iface, signal, params=None):
+        self.bus.emit_signal(None, path, iface, signal, params)
+
+    def toggle(self):
+        if self.toggle_proc is not None and self.toggle_proc.poll() is None:
+            return  # a connect/disconnect is already in progress
+        self.pending_connect = self.state == "disconnected"
+        self.toggle_proc = subprocess.Popen([TOGGLE], start_new_session=True)
+        self.poll()
+
+    def forget_password(self):
+        subprocess.run(["secret-tool", "clear", "service", "shef-vpn", "user", vpn_user()])
+        subprocess.run(["notify-send", "-a", "Sheffield VPN", "-i", "network-vpn",
+                        "Sheffield VPN", "Saved password forgotten; you'll be asked next time"])
+
+    # --- StatusNotifierItem ----------------------------------------------------
+
+    def item_prop(self, conn, sender, path, iface, prop):
+        icon, text = STATES[self.state]
+        values = {
+            "Category": GLib.Variant("s", "SystemServices"),
+            "Id": GLib.Variant("s", "shef-vpn"),
+            "Title": GLib.Variant("s", "Sheffield VPN"),
+            "Status": GLib.Variant("s", "Active"),
+            # No IconName: hosts prefer it over IconPixmap and then tint it.
+            "IconName": GLib.Variant("s", ""),
+            "IconPixmap": GLib.Variant("a(iiay)", self.pixmaps[self.state]),
+            "IconThemePath": GLib.Variant("s", ICON_DIR),
+            "ToolTip": GLib.Variant("(sa(iiay)ss)", ("", self.pixmaps[self.state], "Sheffield VPN", text)),
+            "ItemIsMenu": GLib.Variant("b", False),
+            "Menu": GLib.Variant("o", MENU_PATH),
+        }
+        return values.get(prop)
+
+    def item_call(self, conn, sender, path, iface, method, params, invocation):
+        if method == "Activate":
+            self.toggle()
+        invocation.return_value(None)
+
+    # --- dbusmenu --------------------------------------------------------------
+
+    def items(self):
+        toggle_label = {"connected": "Disconnect", "connecting": "Cancel",
+                        "disconnected": "Connect"}[self.state]
+        return {
+            STATUS_ID: {"label": GLib.Variant("s", STATES[self.state][1]),
+                        "enabled": GLib.Variant("b", False)},
+            TOGGLE_ID: {"label": GLib.Variant("s", toggle_label)},
+            SEP_ID: {"type": GLib.Variant("s", "separator")},
+            FORGET_ID: {"label": GLib.Variant("s", "Forget saved password")},
+        }
+
+    def menu_prop(self, conn, sender, path, iface, prop):
+        values = {
+            "Version": GLib.Variant("u", 3),
+            "TextDirection": GLib.Variant("s", "ltr"),
+            "Status": GLib.Variant("s", "normal"),
+            "IconThemePath": GLib.Variant("as", []),
+        }
+        return values.get(prop)
+
+    def menu_call(self, conn, sender, path, iface, method, params, invocation):
+        items = self.items()
+        if method == "GetLayout":
+            children = [GLib.Variant("(ia{sv}av)", (i, props, [])) for i, props in items.items()]
+            root = (0, {"children-display": GLib.Variant("s", "submenu")}, children)
+            invocation.return_value(GLib.Variant("(u(ia{sv}av))", (self.revision, root)))
+        elif method == "GetGroupProperties":
+            ids = params.unpack()[0] or list(items)
+            result = [(i, items[i]) for i in ids if i in items]
+            invocation.return_value(GLib.Variant("(a(ia{sv}))", (result,)))
+        elif method == "GetProperty":
+            item_id, name = params.unpack()
+            invocation.return_value(GLib.Variant("(v)", (items[item_id][name],)))
+        elif method == "Event":
+            item_id, event = params.unpack()[:2]
+            self.menu_event(item_id, event)
+            invocation.return_value(None)
+        elif method == "EventGroup":
+            for item_id, event, _data, _ts in params.unpack()[0]:
+                self.menu_event(item_id, event)
+            invocation.return_value(GLib.Variant("(ai)", ([],)))
+        elif method == "AboutToShow":
+            invocation.return_value(GLib.Variant("(b)", (False,)))
+        elif method == "AboutToShowGroup":
+            invocation.return_value(GLib.Variant("(aiai)", ([], [])))
+        else:
+            invocation.return_value(None)
+
+    def menu_event(self, item_id, event):
+        if event != "clicked":
+            return
+        if item_id == TOGGLE_ID:
+            self.toggle()
+        elif item_id == FORGET_ID:
+            self.forget_password()
+
+
+if __name__ == "__main__":
+    Tray()
+    GLib.MainLoop().run()

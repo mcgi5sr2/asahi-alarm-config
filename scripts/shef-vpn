@@ -1,0 +1,18 @@
+#!/bin/sh
+# Connect to the University of Sheffield VPN with openfortivpn. Ctrl-C disconnects.
+# openfortivpn prompts for the password but not the username, so ask for it here
+# unless it's set in the config or passed with -u.
+conf="$HOME/.config/openfortivpn/shef.conf"
+
+case " $* " in
+  *" -u "*|*" --username"*) ;;
+  *)
+    if ! grep -qE '^[[:space:]]*username[[:space:]]*=' "$conf"; then
+      printf 'University username: '
+      read -r user
+      set -- -u "$user" "$@"
+    fi
+    ;;
+esac
+
+exec sudo openfortivpn -c "$conf" "$@"
