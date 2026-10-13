@@ -29,7 +29,8 @@ order = [ "default" ]
         "brightness",
         "battery",
         "control-center",
-        "session"
+        "session",
+        "cpu"
     ]
     font_scale = 1.0
     font_weight = 500
@@ -51,7 +52,7 @@ order = [ "default" ]
     shadow = true
     show_on_workspace_switch = true
     smart_auto_hide = false
-    start = [ "launcher", "wallpaper", "workspaces", "scale" ]
+    start = [ "launcher", "wallpaper", "workspaces" ]
     thickness = 34
     widget_spacing = 6
 
@@ -61,8 +62,9 @@ order = [ "default" ]
 enabled = true
 schema_version = 2
 widget_order = [
-    "lockscreen-login-box@DP-3",
-    "lockscreen-login-box@DP-2"
+    "lockscreen-login-box@eDP-1",
+    "lockscreen-login-box@DP-1",
+    "lockscreen-login-box@HDMI-A-1"
 ]
 
     [lockscreen_widgets.grid]
@@ -70,18 +72,18 @@ widget_order = [
     major_interval = 4
     visible = true
 
-    [lockscreen_widgets.widget."lockscreen-login-box@DP-3"]
+    [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
     box_height = 196.0
     box_width = 810.0
-    cx = 1280.0
-    cy = 720.0
-    output = "DP-3"
-    placement_height = 1440.0
-    placement_width = 2560.0
+    cx = 960.0
+    cy = 540.0
+    output = "eDP-1"
+    placement_height = 1080.0
+    placement_width = 1920.0
     rotation = 0.0
     type = "login_box"
 
-        [lockscreen_widgets.widget."lockscreen-login-box@DP-3".settings]
+        [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
         background_color = "surface_variant"
         background_opacity = 0.88
         background_radius = 12.0
@@ -97,18 +99,45 @@ widget_order = [
         show_unlock_hint = true
         show_weather = true
 
-    [lockscreen_widgets.widget."lockscreen-login-box@DP-2"]
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-1"]
     box_height = 196.0
     box_width = 810.0
     cx = 1280.0
     cy = 720.0
-    output = "DP-2"
+    output = "DP-1"
     placement_height = 1440.0
     placement_width = 2560.0
     rotation = 0.0
     type = "login_box"
 
-        [lockscreen_widgets.widget."lockscreen-login-box@DP-2".settings]
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-1".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1280.0
+    cy = 720.0
+    output = "HDMI-A-1"
+    placement_height = 1440.0
+    placement_width = 2560.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1".settings]
         background_color = "surface_variant"
         background_opacity = 0.88
         background_radius = 12.0
@@ -125,28 +154,38 @@ widget_order = [
         show_weather = true
 
 [theme]
+builtin = "Noctalia"
+community_palette = "Oxocarbon"
 custom_palette = "Coral and Sea"
+mode = "dark"
 source = "custom"
+wallpaper_scheme = "m3-content"
 
-[wallpaper.default]
-path = "/home/mcgi5sr2/Pictures/Wallpapers/0R9GUWV.jpg"
+    [theme.templates]
+    builtin_ids = [ "gtk3", "gtk4", "qt" ]
 
-[wallpaper.last]
-path = "/home/mcgi5sr2/Pictures/Wallpapers/0R9GUWV.jpg"
+[wallpaper]
+directory = "/home/me1sgr/Pictures/Wallpapersv2"
+fill_mode = "fit"
 
-[wallpaper.monitors.DP-3]
-path = "/home/mcgi5sr2/Pictures/Wallpapers/0R9GUWV.jpg"
+    [wallpaper.automation]
+    enabled = true
 
-[wallpaper.monitors.DP-2]
-path = "/home/mcgi5sr2/Pictures/Wallpapers/0R9GUWV.jpg"
+    [wallpaper.default]
+    path = "/home/me1sgr/Pictures/Wallpapersv2/gris01.png"
 
+    [wallpaper.last]
+    path = "/home/me1sgr/Pictures/Wallpapersv2/gris01.png"
 
-[widget.scale]
-glyph = "aspect-ratio"
-type = "custom_button"
+    [wallpaper.monitors.eDP-1]
+    path = "/home/me1sgr/Pictures/Wallpapersv2/gris01.png"
 
-    [widget.scale.actions]
-    left = "exec /home/mcgi5sr2/.config/niri/scripts/scale-switcher.sh"
+    [wallpaper.monitors.DP-1]
+    path = "/home/me1sgr/Pictures/Wallpapersv2/gris01.png"
+
+    [wallpaper.monitors.HDMI-A-1]
+    path = "/home/me1sgr/Pictures/Wallpapersv2/gris01.png"
+
 [shell]
 app_icon_colorize = false
 avatar_path = ""

@@ -117,18 +117,25 @@ honor_restored_maximize = false                 # Honor restored maximized state
 # [output.DP-1.layout.scrolling]
 # default_extent_fraction = 0.4
 
-# This machine (workstation-crosshair): dual 2560x1440 @ scale 1.0, Dell on the
-# left. Modes are pinned to exact `umbriel outputs` strings — without this the
-# Dell silently drops to its 59.951 Hz EDID-preferred mode. Config names are
-# used (not connectors) so the layout follows each physical panel between ports.
-[output."Dell Inc. DELL S2725DC 3RKHDH4"]        # DP-3 — left
-mode = "2560x1440@143.973"
+# This machine (ubuntu-dell-laptop, Dell Latitude, Intel Iris Xe): laptop panel
+# on the left, two 2560x1440 externals to its right, all scale 1.0 so logical
+# size == pixel size and the x-offsets stay correct. Keyed by connector for now;
+# swap to the Config names from `umbriel outputs` (as on workstation-crosshair)
+# so the layout follows each physical panel between dock ports. Modes are pinned
+# to exact strings — near-misses fall back to the low-Hz EDID-preferred mode.
+[output.eDP-1]                                  # built-in panel — left
+mode = "1920x1080@60.002"
 position = [0, 0]
 scale = 1.0
 
-[output."LG Electronics LG ULTRAGEAR 302MAXSFPX50"]  # DP-2 — right
-mode = "2560x1440@164.956"
-position = [2560, 0]
+[output.DP-1]                                   # external — middle
+mode = "2560x1440@143.973"
+position = [1920, 0]
+scale = 1.0
+
+[output.HDMI-A-1]                               # external — right
+mode = "2560x1440@143.933"
+position = [4480, 0]
 scale = 1.0
 
 # ────────────────────────────── Workspaces ──────────────────────────────────
@@ -250,7 +257,7 @@ track_layout = "global"                         # global, or window for per-surf
 
 [input.touchpad]
 tap = true                                      # Tap-to-click
-# natural_scroll = true                         # Omit to preserve the libinput default
+natural_scroll = true                           # Matches the niri laptop profile
 # accel_profile = "adaptive"                    # flat, adaptive, or custom <step> <points...>
 # sensitivity = 0.5                             # Pointer speed, -1.0 to 1.0
 # scroll_factor = 1.5                           # Two-finger scroll multiplier, 0.1-10.0
