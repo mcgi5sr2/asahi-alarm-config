@@ -52,7 +52,7 @@ order = [ "default" ]
     shadow = true
     show_on_workspace_switch = true
     smart_auto_hide = false
-    start = [ "launcher", "wallpaper", "workspaces" ]
+    start = [ "launcher", "wallpaper", "workspaces", "scale" ]
     thickness = 34
     widget_spacing = 6
 
@@ -380,6 +380,13 @@ type = "brightness"
 color = "#4ec9b0"
 icon_color = "#4ec9b0"
 type = "battery"
+
+[widget.scale]
+glyph = "aspect-ratio"
+type = "custom_button"
+
+    [widget.scale.actions]
+    left = "exec /home/me1sgr/.config/umbriel/scripts/scale-switcher.sh"
 
 [widget.notifications]
 color = "primary"

@@ -117,26 +117,10 @@ honor_restored_maximize = false                 # Honor restored maximized state
 # [output.DP-1.layout.scrolling]
 # default_extent_fraction = 0.4
 
-# This machine (ubuntu-dell-laptop, Dell Latitude, Intel Iris Xe): laptop panel
-# on the left, two 2560x1440 externals to its right, all scale 1.0 so logical
-# size == pixel size and the x-offsets stay correct. Keyed by connector for now;
-# swap to the Config names from `umbriel outputs` (as on workstation-crosshair)
-# so the layout follows each physical panel between dock ports. Modes are pinned
-# to exact strings — near-misses fall back to the low-Hz EDID-preferred mode.
-[output.eDP-1]                                  # built-in panel — left
-mode = "1920x1080@60.002"
-position = [0, 0]
-scale = 1.0
-
-[output.DP-1]                                   # external — middle
-mode = "2560x1440@143.973"
-position = [1920, 0]
-scale = 1.0
-
-[output.HDMI-A-1]                               # external — right
-mode = "2560x1440@143.933"
-position = [4480, 0]
-scale = 1.0
+# This machine (ubuntu-dell-laptop) docks at several desks, so no output is
+# pinned here: every monitor gets its preferred mode at scale 1.0, placed left
+# to right. Per-desk layouts come from kanshi (~/.config/kanshi/config, saved
+# with `display-profile-save`), which umbriel applies live over these defaults.
 
 # ────────────────────────────── Workspaces ──────────────────────────────────
 # Choose global workspace behavior. Each output uses dynamic workspaces unless

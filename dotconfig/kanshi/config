@@ -1,0 +1,18 @@
+# kanshi: per-desk monitor layouts, applied automatically on hotplug.
+# Monitors are matched by make/model/serial (umbriel's "Config name"), so a
+# profile follows the physical panels whichever port or dock they're on.
+# A desk with no matching profile falls back to umbriel's defaults: preferred
+# mode, scale 1.0, outputs placed left to right.
+#
+# To add a desk: arrange the screens (wdisplays), then run
+# `display-profile-save [name]` — it appends/replaces the profile here and
+# reloads kanshi. Copy the result back into the repo.
+
+profile laptop {
+    output "BOE 0x0AFC Unknown" enable mode 1920x1080@60.002Hz position 0,0 scale 1
+}
+
+profile P2422H {
+    output "BOE 0x0AFC Unknown" enable mode 1920x1080@60.002Hz position 0,0 scale 1
+    output "Dell Inc. DELL P2422H 8HFSBR3" enable mode 1920x1080@60.000Hz position 1920,0 scale 1
+}

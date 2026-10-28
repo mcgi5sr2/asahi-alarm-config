@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# Save the current monitor layout as a kanshi profile, so this desk's
+# arrangement is re-applied automatically whenever the same monitors are
+# plugged in again.
+#
+#   display-profile-save [name]
+#
+# Arrange the screens first (wdisplays, or the scale switcher), then run
+# this. Monitors are matched by make/model/serial (umbriel's Config name),
+# so a profile follows the physical panels whichever port they're on.
+# Disabled outputs (e.g. the laptop panel with the lid shut) are saved as
+# `disable`. A profile with the same name, or for the same set of monitors,
+# is replaced. With no name, one is generated from the external models.
+set -euo pipefail
+
+CONF="${XDG_CONFIG_HOME:-$HOME/.config}/kanshi/config"
+
+# One line per output: "<enabled>\t<config name>\t<WxH@Hz>\t<x,y>\t<scale>"
+mapfile -t OUTS < <(umbriel outputs | awk '
+  function flush() { if (cn != "") print en "\t" cn "\t" mode "\t" pos "\t" sc }
+  /^[^ \t]/              { flush(); en=""; cn=""; mode=""; pos=""; sc="" }
+  /^[ \t]+Enabled:/      { en=$2 }
+  /^[ \t]+Config name:/  { cn=$0; sub(/^[^"]*"/, "", cn); sub(/"[ \t]*$/, "", cn) }
+  /^[ \t]+Position:/     { pos=$2 }
+  /^[ \t]+Scale:/        { sc=$2 + 0 }
+  /current\)/            { mode=$1 "@" $3 }
+  END                    { flush() }')
+
+[ "${#OUTS[@]}" -gt 0 ] || { echo "umbriel reported no outputs" >&2; exit 1; }
+
+name=${1:-}
+if [ -z "$name" ]; then
+  name=$(printf '%s\n' "${OUTS[@]}" | cut -f2 | grep -v '^BOE ' \
+    | awk '{print $(NF-1)}' | paste -sd- | tr -c 'A-Za-z0-9\n-' '_')
+  name=${name:-laptop}
+fi
+
+block="profile $name {"$'\n'
+for o in "${OUTS[@]}"; do
+  IFS=$'\t' read -r en cn mode pos sc <<<"$o"
+  if [ "$en" = yes ]; then
+    block+="    output \"$cn\" enable mode ${mode}Hz position $pos scale $sc"$'\n'
+  else
+    block+="    output \"$cn\" disable"$'\n'
+  fi
+done
+block+="}"
+
+# Monitor set, sorted, to spot an existing profile for the same desk.
+key=$(printf '%s\n' "${OUTS[@]}" | cut -f2 | sort | paste -sd'|')
+
+mkdir -p "$(dirname "$CONF")"
+touch "$CONF"
+tmp=$(mktemp "${CONF}.XXXXXX")
+trap 'rm -f "$tmp"' EXIT
+awk -v name="$name" -v key="$key" '
+  # Buffer each profile block; drop it if its name or monitor set matches.
+  /^profile[ \t]/ { inP=1; buf=$0 "\n"; pname=$2; n=0; delete mons; next }
+  inP {
+    buf = buf $0 "\n"
+    if (match($0, /output "[^"]*"/)) mons[++n] = substr($0, RSTART + 8, RLENGTH - 9)
+    if ($0 ~ /^}/) {
+      inP=0
+      # sort the monitor names (insertion sort; a handful at most)
+      for (i=2;i<=n;i++) { v=mons[i]; for (j=i-1;j>=1 && mons[j]>v;j--) mons[j+1]=mons[j]; mons[j+1]=v }
+      k=""; for (i=1;i<=n;i++) k = k (i>1 ? "|" : "") mons[i]
+      if (pname != name && k != key) printf "%s", buf
+      else dropped=1
+    }
+    next
+  }
+  { print }
+' "$CONF" | cat -s > "$tmp"
+# Keep exactly one blank line between blocks.
+[ -s "$tmp" ] && [ -n "$(tail -c1 "$tmp")" ] && echo >> "$tmp"
+[ -s "$tmp" ] && [ -n "$(tail -n1 "$tmp")" ] && echo >> "$tmp"
+printf '%s\n' "$block" >> "$tmp"
+mv -f "$tmp" "$CONF"
+trap - EXIT
+
+echo "Saved profile '$name' to $CONF:"
+echo "$block"
+if command -v kanshictl >/dev/null && kanshictl reload >/dev/null 2>&1; then
+  echo "kanshi reloaded."
+else
+  echo "(kanshi not running — it'll pick this up when it starts)"
+fi
