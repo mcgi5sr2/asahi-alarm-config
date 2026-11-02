@@ -1,0 +1,22 @@
+#!/bin/sh
+# Attach the VPN's DNS to the ppp link in systemd-resolved, scoped to the
+# domains in /etc/openfortivpn/forti.conf (resolved-domains). Nothing touches
+# the Wi-Fi/wired profiles, and resolved forgets these settings by itself when
+# the ppp interface disappears.
+# Only acts on tunnels started with pppd-ipparam = openfortivpn-forti.
+
+# openfortivpn appends its route list to ipparam ("openfortivpn-forti,10.0.0.0/...").
+case "$PPP_IPPARAM" in openfortivpn-forti*) ;; *) exit 0 ;; esac
+
+conf=/etc/openfortivpn/forti.conf
+get() { sed -n "s/^#[[:space:]]*$1[[:space:]]*=[[:space:]]*//p" "$conf"; }
+
+# pppd exports DNS1/DNS2 when pppd-use-peerdns = 1; fall back to resolved-dns.
+servers=${DNS1:+$DNS1 ${DNS2:-}}
+servers=${servers:-$(get resolved-dns)}
+domains=$(get resolved-domains)
+
+[ -n "$servers" ] && resolvectl dns "$PPP_IFACE" $servers
+[ -n "$domains" ] && resolvectl domain "$PPP_IFACE" $domains
+resolvectl default-route "$PPP_IFACE" no
+exit 0
