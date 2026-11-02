@@ -45,6 +45,12 @@ alias lt='eza --icons --tree --level=2'
 alias cat='bat --style=plain'
 alias grep='grep --color=auto'
 
+# paru -Syu equivalent: apt + flatpak in one go
+syu() {
+  sudo apt update && sudo apt full-upgrade "$@" && sudo apt autoremove
+  flatpak update
+}
+
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 export KUBECONFIG=~/.kube/configs/img-amrc.kubeconfig.yaml
 
