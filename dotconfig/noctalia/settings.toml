@@ -6,10 +6,10 @@ order = [ "default" ]
     [bar.default]
     auto_hide = false
     background_opacity = 1.0
-    border = "outline"
+    border = "outline_variant"
     border_width = 0.0
     capsule = false
-    capsule_fill = "surface_variant"
+    capsule_fill = "surface_container"
     capsule_group = []
     capsule_opacity = 1.0
     capsule_padding = 6.0
@@ -84,7 +84,7 @@ widget_order = [
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -111,7 +111,7 @@ widget_order = [
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@DP-1".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -138,7 +138,7 @@ widget_order = [
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -198,7 +198,7 @@ clipboard_history_max_entries = 100
 clipboard_image_action_command = ""
 clipboard_keep_from_closed_apps = true
 corner_radius_scale = 1.0
-date_format = "%A, %x"
+date_format = "%A, %Y-%m-%d"
 disable_mipmaps = false
 external_ip_enabled = false
 font_family = "sans-serif"
