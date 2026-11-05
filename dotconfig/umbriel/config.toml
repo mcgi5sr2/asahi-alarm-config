@@ -349,8 +349,8 @@ follows_mouse = false                           # Focus on motion after scene ch
 # Actions: https://docs.noctalia.dev/umbriel/actions/
 
 # ─── Applications and session (shipped) ───
-"Mod+Return" = { action = "spawn:kitty", repeat = false }
-"Mod" = "spawn:noctalia msg panel-toggle launcher"    # tap Super = launcher
+"Mod+Return" = { action = "spawn kitty", repeat = false }
+"Mod" = "spawn noctalia msg panel-toggle launcher"    # tap Super = launcher
 "Mod+Q" = { action = "window-close", repeat = false }
 "Mod+Escape" = "session-quit"                          # NOTE: quits the session
 "Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
@@ -387,24 +387,24 @@ follows_mouse = false                           # Focus on motion after scene ch
 "Mod+O" = { action = "overview-toggle", repeat = false }
 
 # ─── Workspaces (shipped) ───
-"Mod+1" = "workspace-switch:1"
-"Mod+2" = "workspace-switch:2"
-"Mod+3" = "workspace-switch:3"
-"Mod+4" = "workspace-switch:4"
-"Mod+5" = "workspace-switch:5"
-"Mod+6" = "workspace-switch:6"
-"Mod+7" = "workspace-switch:7"
-"Mod+8" = "workspace-switch:8"
-"Mod+9" = "workspace-switch:9"
-"Mod+Shift+1" = "window-move-to-workspace:1"
-"Mod+Shift+2" = "window-move-to-workspace:2"
-"Mod+Shift+3" = "window-move-to-workspace:3"
-"Mod+Shift+4" = "window-move-to-workspace:4"
-"Mod+Shift+5" = "window-move-to-workspace:5"
-"Mod+Shift+6" = "window-move-to-workspace:6"
-"Mod+Shift+7" = "window-move-to-workspace:7"
-"Mod+Shift+8" = "window-move-to-workspace:8"
-"Mod+Shift+9" = "window-move-to-workspace:9"
+"Mod+1" = "workspace-switch 1"
+"Mod+2" = "workspace-switch 2"
+"Mod+3" = "workspace-switch 3"
+"Mod+4" = "workspace-switch 4"
+"Mod+5" = "workspace-switch 5"
+"Mod+6" = "workspace-switch 6"
+"Mod+7" = "workspace-switch 7"
+"Mod+8" = "workspace-switch 8"
+"Mod+9" = "workspace-switch 9"
+"Mod+Shift+1" = "window-move-to-workspace 1"
+"Mod+Shift+2" = "window-move-to-workspace 2"
+"Mod+Shift+3" = "window-move-to-workspace 3"
+"Mod+Shift+4" = "window-move-to-workspace 4"
+"Mod+Shift+5" = "window-move-to-workspace 5"
+"Mod+Shift+6" = "window-move-to-workspace 6"
+"Mod+Shift+7" = "window-move-to-workspace 7"
+"Mod+Shift+8" = "window-move-to-workspace 8"
+"Mod+Shift+9" = "window-move-to-workspace 9"
 
 # ─── Scratchpad (shipped) ───
 "Mod+Shift+Space" = { action = "window-move-to-scratchpad", repeat = false }
@@ -415,36 +415,36 @@ follows_mouse = false                           # Focus on motion after scene ch
 # ═══════════════════ LOCAL EXTRAS (chords the shipped set leaves free) ═══════════════════
 
 # ─── Session / shell panels (Noctalia) ───
-"Mod+L" = "spawn:noctalia msg session lock"           # LOCAL: overrides shipped focus-right
-"Mod+Shift+M" = "spawn:noctalia msg session logout"
-"Mod+Shift+C" = "spawn:noctalia msg panel-open control-center"   # relocated from Mod+O
-"Mod+Shift+O" = "spawn:noctalia msg settings-toggle"
+"Mod+L" = "spawn noctalia msg session lock"           # LOCAL: overrides shipped focus-right
+"Mod+Shift+M" = "spawn noctalia msg session logout"
+"Mod+Shift+C" = "spawn noctalia msg panel-open control-center"   # relocated from Mod+O
+"Mod+Shift+O" = "spawn noctalia msg settings-toggle"
 "Mod+Shift+P" = "dpms-off"
 "Ctrl+Alt+Delete" = "session-quit"
 
 # ─── Application launchers ───
-"Mod+E" = "spawn:dolphin"
+"Mod+E" = "spawn dolphin"
 
 # ─── Screenshots (Noctalia tooling) ───
-"Mod+S" = "spawn:noctalia msg screenshot-region"
-"Mod+Shift+S" = "spawn:noctalia msg screenshot-fullscreen"
-"Print" = "spawn:noctalia msg screenshot-fullscreen"
-"Alt+Print" = "spawn:noctalia msg screenshot-region"
+"Mod+S" = "spawn noctalia msg screenshot-region"
+"Mod+Shift+S" = "spawn noctalia msg screenshot-fullscreen"
+"Print" = "spawn noctalia msg screenshot-fullscreen"
+"Alt+Print" = "spawn noctalia msg screenshot-region"
 
 # ─── Volume / mic (Noctalia OSD, usable while locked) ───
-"XF86AudioRaiseVolume" = { action = "spawn:noctalia msg volume-up", allow_when_locked = true }
-"XF86AudioLowerVolume" = { action = "spawn:noctalia msg volume-down", allow_when_locked = true }
-"XF86AudioMute" = { action = "spawn:noctalia msg volume-mute", allow_when_locked = true }
-"XF86AudioMicMute" = { action = "spawn:noctalia msg mic-mute", allow_when_locked = true }
+"XF86AudioRaiseVolume" = { action = "spawn noctalia msg volume-up", allow_when_locked = true }
+"XF86AudioLowerVolume" = { action = "spawn noctalia msg volume-down", allow_when_locked = true }
+"XF86AudioMute" = { action = "spawn noctalia msg volume-mute", allow_when_locked = true }
+"XF86AudioMicMute" = { action = "spawn noctalia msg mic-mute", allow_when_locked = true }
 
 # ─── Playback ───
-"XF86AudioPlay" = { action = "spawn:playerctl play-pause", allow_when_locked = true }
-"XF86AudioNext" = { action = "spawn:playerctl next", allow_when_locked = true }
-"XF86AudioPrev" = { action = "spawn:playerctl previous", allow_when_locked = true }
+"XF86AudioPlay" = { action = "spawn playerctl play-pause", allow_when_locked = true }
+"XF86AudioNext" = { action = "spawn playerctl next", allow_when_locked = true }
+"XF86AudioPrev" = { action = "spawn playerctl previous", allow_when_locked = true }
 
 # ─── Brightness (Noctalia OSD, usable while locked) ───
-"XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up", allow_when_locked = true }
-"XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down", allow_when_locked = true }
+"XF86MonBrightnessUp" = { action = "spawn noctalia msg brightness-up", allow_when_locked = true }
+"XF86MonBrightnessDown" = { action = "spawn noctalia msg brightness-down", allow_when_locked = true }
 
 # ─── Extra navigation carried over from niri (chords shipped leaves free) ───
 # These add capability the shipped set lacks, so they are not duplicates.
@@ -462,21 +462,21 @@ follows_mouse = false                           # Focus on motion after scene ch
 "Mod+Ctrl+Shift+Down" = "window-move-to-output-down"
 "Mod+Ctrl+Shift+Up" = "window-move-to-output-up"
 "Mod+Ctrl+Shift+Right" = "window-move-to-output-right"
-"Mod+Ctrl+1" = "column-move-to-workspace:1"           # move whole column (vs shipped window-move)
-"Mod+Ctrl+2" = "column-move-to-workspace:2"
-"Mod+Ctrl+3" = "column-move-to-workspace:3"
-"Mod+Ctrl+4" = "column-move-to-workspace:4"
-"Mod+Ctrl+5" = "column-move-to-workspace:5"
-"Mod+Ctrl+6" = "column-move-to-workspace:6"
-"Mod+Ctrl+7" = "column-move-to-workspace:7"
-"Mod+Ctrl+8" = "column-move-to-workspace:8"
-"Mod+Ctrl+9" = "column-move-to-workspace:9"
+"Mod+Ctrl+1" = "column-move-to-workspace 1"           # move whole column (vs shipped window-move)
+"Mod+Ctrl+2" = "column-move-to-workspace 2"
+"Mod+Ctrl+3" = "column-move-to-workspace 3"
+"Mod+Ctrl+4" = "column-move-to-workspace 4"
+"Mod+Ctrl+5" = "column-move-to-workspace 5"
+"Mod+Ctrl+6" = "column-move-to-workspace 6"
+"Mod+Ctrl+7" = "column-move-to-workspace 7"
+"Mod+Ctrl+8" = "column-move-to-workspace 8"
+"Mod+Ctrl+9" = "column-move-to-workspace 9"
 "Mod+BracketLeft" = "window-consume-or-expel-left"    # vs shipped consume-only
 "Mod+BracketRight" = "window-consume-or-expel-right"
-"Mod+Minus" = "window-modify-primary-extent:-0.1"     # fine nudge vs shipped cycle
-"Mod+Equal" = "window-modify-primary-extent:0.1"
+"Mod+Minus" = "window-modify-primary-extent -0.1"     # fine nudge vs shipped cycle
+"Mod+Equal" = "window-modify-primary-extent 0.1"
 "Mod+C" = "column-center"
-"Mod+Backslash" = "workspace-set-layout:toggle"       # scrolling <-> dwindle <-> master
+"Mod+Backslash" = "workspace-set-layout toggle"       # scrolling <-> dwindle <-> master
 
 # ─────────────────────────────── Layout ─────────────────────────────────────
 # Configure the default tiling mode and shared sizing behavior. Workspace rules
@@ -864,7 +864,7 @@ action = "overview-toggle"
 [hot_corners.bottom_right]
 enabled = false
 delay_ms = 500
-action = "spawn:notify-send 'Bottom right'"
+action = "spawn notify-send 'Bottom right'"
 
 # ─────────────────────── Security Context Rules ─────────────────────────────
 # Sandboxed clients receive a restricted Wayland global set. Grant extra
